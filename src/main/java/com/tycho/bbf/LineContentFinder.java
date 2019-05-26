@@ -14,7 +14,7 @@ import static com.tycho.bbf.Utils.almostEqual;
 public class LineContentFinder extends ContentFinder {
 
     //Decrease for higher accuracy, Increase for more speed
-    private static final int MAX_X_SKIP = 16;
+    private static final int MAX_X_SKIP = 8;
     private static final int MAX_Y_SKIP = 4;
 
     //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
@@ -27,13 +27,15 @@ public class LineContentFinder extends ContentFinder {
 
     public List<Line> debug_lines = new ArrayList<>();
 
-    private Image threshold = null;
+    private Image image = null;
 
     @Override
     public Rectangle findContent(Image frame) {
         final int WIDTH = (int) frame.getWidth();
         final int HEIGHT = (int) frame.getHeight();
         debug_lines.clear();
+
+        //image = frame;
 
         int top = 0;
         int bottom = HEIGHT;
@@ -195,7 +197,7 @@ public class LineContentFinder extends ContentFinder {
 
         xSkip = MAX_Y_SKIP;
 
-        //Search from left to right
+        //Search from right to left
         for (int x = WIDTH - 1; x > xSkip; x -= xSkip){
             int start = 0;
             boolean started = false;
@@ -242,7 +244,27 @@ public class LineContentFinder extends ContentFinder {
             }
         }
 
-        return new Rectangle(left, top, right - left + 1, bottom - top + 1);
+        return boundingBox(debug_lines);
+       // return new Rectangle(left, top, right - left + 1, bottom - top + 1);
+    }
+
+    private Rectangle boundingBox(final List<Line> lines){
+        int minX = -1;
+        int minY = -1;
+        int maxX = -1;
+        int maxY = -1;
+        for (Line line : lines){
+            if (minX == -1 || line.x1 < minX) minX = line.x1;
+            if (line.x1 > maxX) maxX = line.x1;
+            if (maxX == -1 || line.x2 < minX) minX = line.x2;
+            if (line.x2 > maxX) maxX = line.x2;
+
+            if (minY == -1 || line.y1 < minY) minY = line.y1;
+            if (line.y1 > maxY) maxY = line.y1;
+            if (maxY == -1 || line.y2 < minY) minY = line.y2;
+            if (line.y2 > maxY) maxY = line.y2;
+        }
+        return new Rectangle(minX, minY, maxX -  minX, maxY - minY);
     }
 
     private double avg(final Color color){
@@ -268,7 +290,7 @@ public class LineContentFinder extends ContentFinder {
     private static double IMG_THRESHOLD = 0.01;
 
     public void drawDebug(final GraphicsContext gc, boolean drawLines){
-        if (threshold != null) gc.drawImage(this.threshold, 0, 0);
+        if (image != null) gc.drawImage(threshold(image, IMG_THRESHOLD), 0, 0);
 
         if (drawLines){
             for (Line line : debug_lines){

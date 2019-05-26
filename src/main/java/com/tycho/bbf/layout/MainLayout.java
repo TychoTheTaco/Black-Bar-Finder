@@ -9,14 +9,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class MainLayout {
-
-    @FXML
-    private GridPane stats;
 
     @FXML
     private Label frame_count_label;
@@ -28,7 +26,13 @@ public class MainLayout {
     public Canvas video_canvas;
 
     @FXML
-    private GridPane kb_shortcuts;
+    public BorderPane content_size_pane;
+
+    @FXML
+    public BorderPane largest_content_size_pane;
+
+    @FXML
+    public BorderPane estimated_video_area_pane;
 
     private GraphicsContext gc;
 
@@ -49,12 +53,6 @@ public class MainLayout {
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, video_canvas.getWidth(), video_canvas.getHeight());
-
-        kb_shortcuts.setHgap(15);
-        kb_shortcuts.setPadding(new Insets(0, 5, 0, 5));
-
-        stats.setHgap(15);
-        stats.setPadding(new Insets(0, 5, 0, 5));
 
         video_canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -90,6 +88,8 @@ public class MainLayout {
 
         setProcessingTime(elapsed);
 
+        //GridPane.setMargin(content_size_pane, new Insets((contentBounds.getY() / image.getHeight()) * content_size_pane.getHeight(), 0, 0, (contentBounds.getX() * image.getWidth()) * content_size_pane.getHeight()));
+
         if (overlay) {
             //Scale to fit canvas
             gc.save();
@@ -116,17 +116,11 @@ public class MainLayout {
             //Make video area symmetrical
             if (forceSymmetrical){
                 final double left = videoBoundary.getX();
-                System.out.println("W: " + image.getWidth() + " VBX: " + videoBoundary.getX() + " VBW: " + videoBoundary.getWidth());
                 final double right = image.getWidth() - (videoBoundary.getX() + videoBoundary.getWidth());
                 final double top = videoBoundary.getY();
                 final double bottom = image.getHeight() - (videoBoundary.getY() + videoBoundary.getHeight());
-                System.out.println("   " + top + "  ");
-                System.out.println(left + "   " + right);
-                System.out.println("   " + bottom + "  ");
                 final double xDif = Math.abs(left - right);
                 final double yDif = Math.abs(top - bottom);
-                System.out.println("xDif: " + xDif);
-                System.out.println("yDif: " + yDif);
                 videoBoundary.setX(Math.min(left, right));
                 videoBoundary.setWidth(videoBoundary.getWidth() + xDif);
                 videoBoundary.setY(Math.min(top, bottom));

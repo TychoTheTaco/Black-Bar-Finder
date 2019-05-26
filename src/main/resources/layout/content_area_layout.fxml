@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.tycho.bbf.layout.ContentAreaLayout">
+
+    <GridPane.margin>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </GridPane.margin>
+    <padding>
+        <Insets top="5" left="5" right="5" bottom="5"/>
+    </padding>
+
+    <top>
+        <Label fx:id="top" text="100" BorderPane.alignment="CENTER"/>
+    </top>
+    <left>
+        <Label fx:id="left" text="100"/>
+    </left>
+    <right>
+        <Label fx:id="right" text="100"/>
+    </right>
+    <bottom>
+        <Label fx:id="bottom" text="100" BorderPane.alignment="CENTER"/>
+    </bottom>
+
+</BorderPane>
