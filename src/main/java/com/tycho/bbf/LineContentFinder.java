@@ -38,9 +38,9 @@ public class LineContentFinder extends ContentFinder {
         //image = frame;
 
         int top = 0;
-        int bottom = HEIGHT;
+        int bottom = HEIGHT - 1;
         int left = 0;
-        int right = WIDTH;
+        int right = WIDTH - 1;
 
         int ySkip = MAX_Y_SKIP;
 
@@ -75,13 +75,11 @@ public class LineContentFinder extends ContentFinder {
                     if (!started){
                         start = x;
                         started = true;
-                        System.out.println("Started at " + x + ", " + y);
                     }
                 }else{
                     if (started){
                         start = x + 1;
                         started = false;
-                        System.out.println("Stopped at " + x + ", " + y);
                     }
                 }
             }
@@ -244,8 +242,11 @@ public class LineContentFinder extends ContentFinder {
             }
         }
 
-        return boundingBox(debug_lines);
-       // return new Rectangle(left, top, right - left + 1, bottom - top + 1);
+        if (debug_lines.size() == 0){
+            return new Rectangle();
+        }else{
+            return boundingBox(debug_lines);
+        }
     }
 
     private Rectangle boundingBox(final List<Line> lines){

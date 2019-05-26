@@ -49,8 +49,8 @@ public class Main extends Application {
         //final File file = new File("src/main/resources/subtitle3.png");
         grabber = new FFmpegFrameGrabber(file);
         grabber.start();
-        //frameCount = 3131 - 1;
-        //grabber.setVideoFrameNumber(frameCount);
+        frameCount = 3900 - 1;
+        grabber.setVideoFrameNumber(frameCount);
 
         mainLayout = loader.getController();
 

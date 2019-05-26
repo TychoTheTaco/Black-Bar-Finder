@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -26,13 +27,16 @@ public class MainLayout {
     public Canvas video_canvas;
 
     @FXML
-    public BorderPane content_size_pane;
+    public StackPane content_size_pane;
 
     @FXML
-    public BorderPane largest_content_size_pane;
+    public StackPane largest_content_size_pane;
 
     @FXML
-    public BorderPane estimated_video_area_pane;
+    public StackPane estimated_video_area_pane;
+
+    @FXML
+    private ContentAreaLayout content_size_paneController;
 
     private GraphicsContext gc;
 
@@ -60,10 +64,21 @@ public class MainLayout {
                 System.out.println("Click: " + event.getX() + " " + event.getY());
             }
         });
+
+        System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
+        int w = (int) (video_canvas.getWidth() / 8);
+        int h = (int) ((9f / 16) * w);
+        System.out.println("Calculated size: " + w + " by " + h);
+        content_size_pane.setPrefWidth(w);
+        content_size_pane.setMaxWidth(w);
+        content_size_pane.setPrefHeight(h);
+        content_size_pane.setMaxHeight(h);
     }
 
     public void setFrame(final Image image) {
         this.image = image;
+
+        System.out.println("New size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
 
         //Scale image to fit canvas
         Image scaledImage = image;
@@ -88,7 +103,11 @@ public class MainLayout {
 
         setProcessingTime(elapsed);
 
-        //GridPane.setMargin(content_size_pane, new Insets((contentBounds.getY() / image.getHeight()) * content_size_pane.getHeight(), 0, 0, (contentBounds.getX() * image.getWidth()) * content_size_pane.getHeight()));
+        final int t = (int) contentBounds.getY();
+        final int l = (int) contentBounds.getX();
+        final int r = (int) (image.getWidth() - (contentBounds.getX() + contentBounds.getWidth()));
+        final int b = (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()));
+        content_size_paneController.setMargins(t, l, r, b);
 
         if (overlay) {
             //Scale to fit canvas
@@ -152,6 +171,7 @@ public class MainLayout {
     }
 
     private void setIfLarger(final Rectangle a, final Rectangle b){
+        if (a.getWidth() + a.getHeight() == 0) return;
         if (a.getX() < b.getX()) b.setX(a.getX());
         if (a.getY() < b.getY()) b.setY(a.getY());
         if (a.getX() + a.getWidth() > b.getX() + b.getWidth()) b.setWidth(a.getX() + a.getWidth() - b.getX());

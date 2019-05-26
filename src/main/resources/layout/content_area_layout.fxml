@@ -4,28 +4,29 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.tycho.bbf.layout.ContentAreaLayout">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           style="-fx-background-color: black;"
+           fx:controller="com.tycho.bbf.layout.ContentAreaLayout">
 
-    <GridPane.margin>
-        <Insets top="5" left="5" right="5" bottom="5"/>
-    </GridPane.margin>
-    <padding>
-        <Insets top="5" left="5" right="5" bottom="5"/>
-    </padding>
+    <BorderPane fx:id="borderPane" style="-fx-background-color: red;">
+        <padding>
+            <Insets top="2" left="2" right="2" bottom="2"/>
+        </padding>
 
-    <top>
-        <Label fx:id="top" text="100" BorderPane.alignment="CENTER"/>
-    </top>
-    <left>
-        <Label fx:id="left" text="100"/>
-    </left>
-    <right>
-        <Label fx:id="right" text="100"/>
-    </right>
-    <bottom>
-        <Label fx:id="bottom" text="100" BorderPane.alignment="CENTER"/>
-    </bottom>
+        <top>
+            <Label fx:id="top" text="100" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt;"/>
+        </top>
+        <left>
+            <Label fx:id="left" text="100" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt;"/>
+        </left>
+        <right>
+            <Label fx:id="right" text="100" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt;"/>
+        </right>
+        <bottom>
+            <Label fx:id="bottom" text="100" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt;"/>
+        </bottom>
+    </BorderPane>
 
-</BorderPane>
+
+</StackPane>

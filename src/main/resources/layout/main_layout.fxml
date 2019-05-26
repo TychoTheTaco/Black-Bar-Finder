@@ -12,7 +12,7 @@
 
     <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1280" height="720"/>
 
-    <GridPane fx:id="kb_shortcuts" GridPane.columnIndex="0" GridPane.rowIndex="1"  hgap="15">
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1"  hgap="15">
         <padding>
             <Insets left="5" right="5"/>
         </padding>
@@ -21,7 +21,7 @@
         <Label text="[D] Next Frame" GridPane.columnIndex="2" GridPane.rowIndex="0" />
     </GridPane>
 
-    <GridPane fx:id="sizes_pane" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
         <GridPane.margin>
             <Insets left="5"/>
         </GridPane.margin>
@@ -38,70 +38,13 @@
         </Separator>
 
         <Label text="Content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <BorderPane fx:id="content_size_pane" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-background-color: red;">
-            <GridPane.margin>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </GridPane.margin>
-            <padding>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </padding>
-            <top>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </top>
-            <left>
-                <Label text="100"/>
-            </left>
-            <right>
-                <Label text="100"/>
-            </right>
-            <bottom>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </bottom>
-        </BorderPane>
+        <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
         <Label text="Largest content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <BorderPane fx:id="largest_content_size_pane" GridPane.columnIndex="0" GridPane.rowIndex="6" style="-fx-background-color: green;">
-            <GridPane.margin>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </GridPane.margin>
-            <padding>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </padding>
-            <top>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </top>
-            <left>
-                <Label text="100"/>
-            </left>
-            <right>
-                <Label text="100"/>
-            </right>
-            <bottom>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </bottom>
-        </BorderPane>
+        <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
 
         <Label text="Estimated video area: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <BorderPane fx:id="estimated_video_area_pane" GridPane.columnIndex="0" GridPane.rowIndex="8" style="-fx-background-color: aqua;">
-            <GridPane.margin>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </GridPane.margin>
-            <padding>
-                <Insets top="5" left="5" right="5" bottom="5"/>
-            </padding>
-            <top>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </top>
-            <left>
-                <Label text="100"/>
-            </left>
-            <right>
-                <Label text="100"/>
-            </right>
-            <bottom>
-                <Label text="100" BorderPane.alignment="CENTER"/>
-            </bottom>
-        </BorderPane>
+        <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
     </GridPane>
 
 </GridPane>
