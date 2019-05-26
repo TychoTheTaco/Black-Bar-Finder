@@ -3,14 +3,11 @@ package com.tycho.bbf.layout;
 import com.tycho.bbf.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -54,6 +51,9 @@ public class MainLayout {
     @FXML
     private Label estimated_video_area_label;
 
+    @FXML
+    private Label cursor_position_label;
+
     private GraphicsContext gc;
 
     private final ContentFinder contentFinder = new LineContentFinder();
@@ -80,6 +80,14 @@ public class MainLayout {
                 System.out.println("Click: " + event.getX() + " " + event.getY());
             }
         });
+        video_canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                final int x = (int) (image == null ? event.getX() : ((event.getX() / video_canvas.getWidth()) * image.getWidth()));
+                final int y = (int) (image == null ? event.getY() : ((event.getY() / video_canvas.getHeight()) * image.getHeight()));
+                cursor_position_label.setText("Position: (" + x + ", " + y + ")");
+            }
+        });
 
         System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
         int w = (int) (video_canvas.getWidth() / 8);
@@ -89,9 +97,9 @@ public class MainLayout {
         setPrefAndMax(largest_content_size_pane, w, h);
         setPrefAndMax(estimated_video_area_pane, w, h);
 
-        content_size_paneController.setStyle("-fx-background-color: red;");
-        largest_content_size_paneController.setStyle("-fx-background-color: green;");
-        estimated_video_area_paneController.setStyle("-fx-background-color: aqua;");
+        content_size_paneController.setColor(Color.RED);
+        largest_content_size_paneController.setColor(Color.GREEN);
+        estimated_video_area_paneController.setColor(Color.BLUE);
     }
 
     private void setPrefAndMax(final Pane pane, final int width, final int height){

@@ -26,6 +26,9 @@ public class ContentAreaLayout {
     private BorderPane borderPane;
 
     @FXML
+    private Canvas background_canvas;
+
+    @FXML
     private Label top;
 
     @FXML
@@ -37,9 +40,13 @@ public class ContentAreaLayout {
     @FXML
     private Label bottom;
 
+    private Color color = Color.RED;
+
     @FXML
     private void initialize() {
         System.out.println("Initialize ContentAreaLayout!");
+        background_canvas.widthProperty().bind(root.widthProperty());
+        background_canvas.heightProperty().bind(root.heightProperty());
     }
 
     public void setMargins(final int top, final int left, final int right, final int bottom){
@@ -48,14 +55,20 @@ public class ContentAreaLayout {
         this.right.setText(String.valueOf(right));
         this.bottom.setText(String.valueOf(bottom));
 
-        StackPane.setMargin(borderPane, new Insets((top / 1080f) * root.getHeight(), (right / 1920f) * root.getHeight(), (bottom / 1080f) * root.getHeight(), (left / 1920f) * root.getHeight()));
-        final Insets margins = StackPane.getMargin(borderPane);
-        System.out.println("Margins: " + margins);
-        System.out.println("Margin total: " + (margins.getTop() + margins.getBottom()));
-        System.out.println("Pane size: " + root.getWidth() + " by " + root.getHeight());
+        final double t = (top / 1080f) * root.getHeight();
+        final double l = (left / 1920f) * root.getHeight();
+        final double r = (right / 1920f) * root.getHeight();
+        final double b = (bottom / 1080f) * root.getHeight();
+
+        final GraphicsContext gc = background_canvas.getGraphicsContext2D();
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, background_canvas.getWidth(), background_canvas.getHeight());
+
+        gc.setFill(this.color);
+        gc.fillRect(l, t, background_canvas.getWidth() - r - l, background_canvas.getHeight() - b - t);
     }
 
-    public void setStyle(final String style){
-        borderPane.setStyle(style);
+    public void setColor(final Color color){
+        this.color = color;
     }
 }

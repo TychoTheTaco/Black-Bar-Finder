@@ -16,9 +16,10 @@
         <padding>
             <Insets left="5" right="5"/>
         </padding>
-        <Label text="[E] Toggle Overlay" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <Label text="[S] Previous Frame" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <Label text="[D] Next Frame" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <Label fx:id="cursor_position_label" text="Position: (x, y)" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+        <Label text="[E] Toggle Overlay" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Label text="[S] Previous Frame" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <Label text="[D] Next Frame" GridPane.columnIndex="3" GridPane.rowIndex="0" />
     </GridPane>
 
     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
