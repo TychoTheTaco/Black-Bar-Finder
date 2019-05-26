@@ -17,12 +17,6 @@ public class LineContentFinder extends ContentFinder {
     private static final int MAX_X_SKIP = 8;
     private static final int MAX_Y_SKIP = 4;
 
-    //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
-    private static final float THRESHOLD = 0.003f;
-
-    //Percentage of pixels per line that need to be considered 'content' before the line is considered content.
-    private static final double AVG_THRESHOLD = 0.2;
-
     private static final double LINE_LENGTH_THRESHOLD = 0.015;
 
     public List<Line> debug_lines = new ArrayList<>();
@@ -265,7 +259,7 @@ public class LineContentFinder extends ContentFinder {
             if (maxY == -1 || line.y2 < minY) minY = line.y2;
             if (line.y2 > maxY) maxY = line.y2;
         }
-        return new Rectangle(minX, minY, maxX -  minX, maxY - minY);
+        return new Rectangle(minX, minY, maxX -  minX + 1, maxY - minY + 1);
     }
 
     private double avg(final Color color){

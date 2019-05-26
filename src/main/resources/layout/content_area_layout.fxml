@@ -9,7 +9,7 @@
            style="-fx-background-color: black;"
            fx:controller="com.tycho.bbf.layout.ContentAreaLayout">
 
-    <BorderPane fx:id="borderPane" style="-fx-background-color: red;">
+    <BorderPane fx:id="borderPane">
         <padding>
             <Insets top="2" left="2" right="2" bottom="2"/>
         </padding>

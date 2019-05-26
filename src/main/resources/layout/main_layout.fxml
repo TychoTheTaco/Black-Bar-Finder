@@ -37,13 +37,13 @@
             </GridPane.margin>
         </Separator>
 
-        <Label text="Content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Label fx:id="content_size_label" text="Content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
         <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
-        <Label text="Largest content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <Label fx:id="largest_content_size_label" text="Largest content size: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="5" />
         <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
 
-        <Label text="Estimated video area: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <Label fx:id="estimated_video_area_label" text="Estimated video area: 1920 by 1080" GridPane.columnIndex="0" GridPane.rowIndex="7" />
         <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
     </GridPane>
 

@@ -54,4 +54,8 @@ public class ContentAreaLayout {
         System.out.println("Margin total: " + (margins.getTop() + margins.getBottom()));
         System.out.println("Pane size: " + root.getWidth() + " by " + root.getHeight());
     }
+
+    public void setStyle(final String style){
+        borderPane.setStyle(style);
+    }
 }

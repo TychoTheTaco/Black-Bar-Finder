@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -37,6 +38,21 @@ public class MainLayout {
 
     @FXML
     private ContentAreaLayout content_size_paneController;
+
+    @FXML
+    private ContentAreaLayout largest_content_size_paneController;
+
+    @FXML
+    private ContentAreaLayout estimated_video_area_paneController;
+
+    @FXML
+    private Label content_size_label;
+
+    @FXML
+    private Label largest_content_size_label;
+
+    @FXML
+    private Label estimated_video_area_label;
 
     private GraphicsContext gc;
 
@@ -69,10 +85,20 @@ public class MainLayout {
         int w = (int) (video_canvas.getWidth() / 8);
         int h = (int) ((9f / 16) * w);
         System.out.println("Calculated size: " + w + " by " + h);
-        content_size_pane.setPrefWidth(w);
-        content_size_pane.setMaxWidth(w);
-        content_size_pane.setPrefHeight(h);
-        content_size_pane.setMaxHeight(h);
+        setPrefAndMax(content_size_pane, w, h);
+        setPrefAndMax(largest_content_size_pane, w, h);
+        setPrefAndMax(estimated_video_area_pane, w, h);
+
+        content_size_paneController.setStyle("-fx-background-color: red;");
+        largest_content_size_paneController.setStyle("-fx-background-color: green;");
+        estimated_video_area_paneController.setStyle("-fx-background-color: aqua;");
+    }
+
+    private void setPrefAndMax(final Pane pane, final int width, final int height){
+        pane.setPrefWidth(width);
+        pane.setMaxWidth(width);
+        pane.setPrefHeight(height);
+        pane.setMaxHeight(height);
     }
 
     public void setFrame(final Image image) {
@@ -103,11 +129,25 @@ public class MainLayout {
 
         setProcessingTime(elapsed);
 
-        final int t = (int) contentBounds.getY();
-        final int l = (int) contentBounds.getX();
-        final int r = (int) (image.getWidth() - (contentBounds.getX() + contentBounds.getWidth()));
-        final int b = (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()));
-        content_size_paneController.setMargins(t, l, r, b);
+        //Calculate maximum content bounds
+        if (maxContentBounds == null) maxContentBounds = contentBounds;
+        setIfLarger(contentBounds, maxContentBounds);
+
+        //Calculate video boundary
+        if (videoBoundary == null) videoBoundary = new Rectangle(maxContentBounds.getX(), maxContentBounds.getY(), maxContentBounds.getWidth(), maxContentBounds.getHeight());
+        setIfLarger(maxContentBounds, videoBoundary);
+        if (forceSymmetrical){
+            final double left = videoBoundary.getX();
+            final double right = image.getWidth() - (videoBoundary.getX() + videoBoundary.getWidth());
+            final double top = videoBoundary.getY();
+            final double bottom = image.getHeight() - (videoBoundary.getY() + videoBoundary.getHeight());
+            final double xDif = Math.abs(left - right);
+            final double yDif = Math.abs(top - bottom);
+            videoBoundary.setX(Math.min(left, right));
+            videoBoundary.setWidth(videoBoundary.getWidth() + xDif);
+            videoBoundary.setY(Math.min(top, bottom));
+            videoBoundary.setHeight(videoBoundary.getHeight() + yDif);
+        }
 
         if (overlay) {
             //Scale to fit canvas
@@ -123,37 +163,40 @@ public class MainLayout {
             gc.setLineWidth(1);
 
             //Draw maximum content bounds
-            if (maxContentBounds == null) maxContentBounds = contentBounds;
-            setIfLarger(contentBounds, maxContentBounds);
             gc.setStroke(Color.GREEN);
             gc.strokeRect(maxContentBounds.getX() + 0.5, maxContentBounds.getY() + 0.5, maxContentBounds.getWidth() - 1, maxContentBounds.getHeight() - 1);
 
-            //Draw estimated video area
-            if (videoBoundary == null) videoBoundary = new Rectangle(maxContentBounds.getX(), maxContentBounds.getY(), maxContentBounds.getWidth(), maxContentBounds.getHeight());
-            setIfLarger(maxContentBounds, videoBoundary);
-
-            //Make video area symmetrical
-            if (forceSymmetrical){
-                final double left = videoBoundary.getX();
-                final double right = image.getWidth() - (videoBoundary.getX() + videoBoundary.getWidth());
-                final double top = videoBoundary.getY();
-                final double bottom = image.getHeight() - (videoBoundary.getY() + videoBoundary.getHeight());
-                final double xDif = Math.abs(left - right);
-                final double yDif = Math.abs(top - bottom);
-                videoBoundary.setX(Math.min(left, right));
-                videoBoundary.setWidth(videoBoundary.getWidth() + xDif);
-                videoBoundary.setY(Math.min(top, bottom));
-                videoBoundary.setHeight(videoBoundary.getHeight() + yDif);
-            }
+            //Draw video boundary
             gc.setStroke(Color.CYAN);
             gc.strokeRect(videoBoundary.getX() + 0.5, videoBoundary.getY() + 0.5, videoBoundary.getWidth() - 1, videoBoundary.getHeight() - 1);
 
-            //Debug points
-            //gc.setFill(Color.WHITE);
-            //gc.fillRect(contentFinder.a.getX(), contentFinder.a.getY() - 5, 1, 10);
-            //gc.fillRect(contentFinder.b.getX(), contentFinder.b.getY() - 5, 1, 10);
-
             gc.restore();
+        }
+
+        content_size_label.setText("Content size: " + (int) contentBounds.getWidth() + " by " + (int) contentBounds.getHeight());
+        content_size_paneController.setMargins(
+                (int) contentBounds.getY(),
+                (int) contentBounds.getX(),
+                (int) (image.getWidth() - (contentBounds.getX() + contentBounds.getWidth())),
+                (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()))
+        );
+        if (maxContentBounds != null){
+            largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
+            largest_content_size_paneController.setMargins(
+                    (int) maxContentBounds.getY(),
+                    (int) maxContentBounds.getX(),
+                    (int) (image.getWidth() - (maxContentBounds.getX() + maxContentBounds.getWidth())),
+                    (int) (image.getHeight() - (maxContentBounds.getY() + maxContentBounds.getHeight()))
+            );
+        }
+        if (videoBoundary != null){
+            estimated_video_area_label.setText("Video boundary: " + (int) videoBoundary.getWidth() + " by " + (int) videoBoundary.getHeight());
+            estimated_video_area_paneController.setMargins(
+                    (int) videoBoundary.getY(),
+                    (int) videoBoundary.getX(),
+                    (int) (image.getWidth() - (videoBoundary.getX() + videoBoundary.getWidth())),
+                    (int) (image.getHeight() - (videoBoundary.getY() + videoBoundary.getHeight()))
+            );
         }
 
         if (debug){
