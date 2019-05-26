@@ -44,9 +44,9 @@ public class Main extends Application {
         primaryStage.sizeToScene(); // Bug workaround
         primaryStage.show();
 
-        //final File file = new File("src/main/resources/blessings.mp4");
+        final File file = new File("src/main/resources/blessings.mp4");
         //final File file = new File("src/main/resources/limitless.mp4");
-        final File file = new File("src/main/resources/subtitle3.png");
+        //final File file = new File("src/main/resources/subtitle3.png");
         grabber = new FFmpegFrameGrabber(file);
         grabber.start();
         //frameCount = 1800;
