@@ -48,54 +48,50 @@ public class LineContentFinder extends ContentFinder {
 
         //Search from top to bottom
         for (int y = 0; y < HEIGHT - ySkip; y += ySkip){
-            int xSkip = MAX_X_SKIP;
             int start = 0;
             boolean started = false;
+            boolean hit = false;
+            int xSkip = MAX_X_SKIP;
             for (int x = 0; x < WIDTH - 1; x += xSkip){
-                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
-                    if (started){
-                        final Line line = new Line(start, y, x, y);
-                        debug_lines.add(line);
-                        if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
-                            top = y;
-                            break;
-                        }
-                    }else{
-                        start = x;
-                        started = true;
-                    }
-                }else{
-                    if (started){
-
-                        /*if (ySkip > 1){
-                            y -= ySkip;
-                            if (y < 0) y = 0;
-                            ySkip = 1;
-                            continue;
-                        }*/
-
+                if (started){
+                    final Line line = new Line(start, y, x, y);
+                    if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
                         if (xSkip > 1){
                             x = start;
                             if (x < 0) x = 0;
                             xSkip = 1;
                             continue;
                         }
-
-                        final Line line = new Line(start, y, x, y);
+                        System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-
-                        if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
-                            top = y;
-                            break;
-                        }
-
-                        start = x + 1;
-                        started = false;
+                        top = y;
+                        hit = true;
+                        break;
                     }
                 }
-                if (top > 0) break;
+                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
+                    if (!started){
+                        start = x;
+                        started = true;
+                        System.out.println("Started at " + x + ", " + y);
+                    }
+                }else{
+                    if (started){
+                        start = x + 1;
+                        started = false;
+                        System.out.println("Stopped at " + x + ", " + y);
+                    }
+                }
+            }
+            if (hit) break;
+            if (started){
+                final Line line = new Line(start, y, WIDTH - 1, y);
+                if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
+                    System.out.println("Hit TOP threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
+                    debug_lines.add(line);
+                    top = y;
+                    break;
+                }
             }
         }
 
@@ -105,44 +101,46 @@ public class LineContentFinder extends ContentFinder {
         for (int y = HEIGHT - 1; y > ySkip; y -= ySkip){
             int start = 0;
             boolean started = false;
+            boolean hit = false;
             int xSkip = MAX_X_SKIP;
             for (int x = 0; x < WIDTH - 1; x += xSkip){
-                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
-                    if (started){
-                        final Line line = new Line(start, y, x, y);
-                        if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
-                            bottom = y;
-                            break;
-                        }
-                    }else{
-                        start = x;
-                        started = true;
-                    }
-                }else{
-                    if (started){
-
+                if (started){
+                    final Line line = new Line(start, y, x, y);
+                    if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
                         if (xSkip > 1){
                             x = start;
                             if (x < 0) x = 0;
                             xSkip = 1;
                             continue;
                         }
-
-                        final Line line = new Line(start, y, x, y);
+                        System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-
-                        if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
-                            bottom = y;
-                            break;
-                        }
-
+                        bottom = y;
+                        hit = true;
+                        break;
+                    }
+                }
+                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
+                    if (!started){
+                        start = x;
+                        started = true;
+                    }
+                }else{
+                    if (started){
                         start = x + 1;
                         started = false;
                     }
                 }
-                if (bottom < HEIGHT) break;
+            }
+            if (hit) break;
+            if (started){
+                final Line line = new Line(start, y, WIDTH - 1, y);
+                if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
+                    System.out.println("Hit BOTTOM threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
+                    debug_lines.add(line);
+                    bottom = y;
+                    break;
+                }
             }
         }
 
@@ -152,45 +150,47 @@ public class LineContentFinder extends ContentFinder {
         for (int x = 0; x < WIDTH - xSkip; x += xSkip){
             int start = 0;
             boolean started = false;
+            boolean hit = false;
             ySkip = MAX_X_SKIP;
             for (int y = 0; y < HEIGHT - 1; y += ySkip){
-                final Line line = new Line(x, start, x, y);
-                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
-                    if (started){
-                        if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD) {
-                            System.out.println("Hit LEFT threshold at " + x + ", " + y + " with length " + line.length());
-                            debug_lines.add(line);
-                            left = x;
-                            break;
-                        }
-                    }else{
-                        start = y;
-                        started = true;
-                        System.out.println("Started at " + x + ", " +y);
-                    }
-                }else{
-                    if (started){
-
+                if (started){
+                    final Line line = new Line(x, start, x, y);
+                    if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                         if (ySkip > 1){
                             y = start;
                             if (y < 0) y = 0;
                             ySkip = 1;
                             continue;
                         }
-
-                        if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
-                            debug_lines.add(line);
-                            left = x;
-                            break;
-                        }
-
+                        System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
+                        debug_lines.add(line);
+                        left = x;
+                        hit = true;
+                        break;
+                    }
+                }
+                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
+                    if (!started){
+                        start = y;
+                        started = true;
+                    }
+                }else{
+                    if (started){
                         start = y + 1;
                         started = false;
                     }
                 }
             }
-            if (started) break;
+            if (hit) break;
+            if (started){
+                final Line line = new Line(x, start, x, HEIGHT - 1);
+                if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
+                    System.out.println("Hit LEFT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
+                    debug_lines.add(line);
+                    left = x;
+                    break;
+                }
+            }
         }
 
         xSkip = MAX_Y_SKIP;
@@ -199,44 +199,47 @@ public class LineContentFinder extends ContentFinder {
         for (int x = WIDTH - 1; x > xSkip; x -= xSkip){
             int start = 0;
             boolean started = false;
+            boolean hit = false;
             ySkip = MAX_X_SKIP;
             for (int y = 0; y < HEIGHT - 1; y += ySkip){
-                final Line line = new Line(x, start, x, y);
-                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
-                    if (started){
-                        if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD) {
-                            System.out.println("Hit RIGHT threshold at " + x + ", " + y + " with length " + line.length());
-                            debug_lines.add(line);
-                            right = x;
-                            break;
-                        }
-                    }else{
-                        start = y;
-                        started = true;
-                    }
-                }else{
-                    if (started){
-
+                if (started){
+                    final Line line = new Line(x, start, x, y);
+                    if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                         if (ySkip > 1){
                             y = start;
                             if (y < 0) y = 0;
                             ySkip = 1;
                             continue;
                         }
-
-                        if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
-                            System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
-                            debug_lines.add(line);
-                            right = x;
-                            break;
-                        }
-
+                        System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
+                        debug_lines.add(line);
+                        right = x;
+                        hit = true;
+                        break;
+                    }
+                }
+                if ((avg(pixelReader.getColor(x, y)) > IMG_THRESHOLD)){
+                    if (!started){
+                        start = y;
+                        started = true;
+                    }
+                }else{
+                    if (started){
                         start = y + 1;
                         started = false;
                     }
                 }
             }
-            if (right < WIDTH) break;
+            if (hit) break;
+            if (started){
+                final Line line = new Line(x, start, x, HEIGHT - 1);
+                if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
+                    System.out.println("Hit RIGHT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
+                    debug_lines.add(line);
+                    right = x;
+                    break;
+                }
+            }
         }
 
         return new Rectangle(left, top, right - left + 1, bottom - top + 1);
@@ -265,16 +268,12 @@ public class LineContentFinder extends ContentFinder {
     private static double IMG_THRESHOLD = 0.01;
 
     public void drawDebug(final GraphicsContext gc, boolean drawLines){
-        boolean alternate = true;
-
         if (threshold != null) gc.drawImage(this.threshold, 0, 0);
 
         if (drawLines){
             for (Line line : debug_lines){
-                gc.setStroke(alternate ? Color.RED: Color.LIGHTGREEN);
-                if (line.length() >= (line.x1 == line.x2 ? 1920 : 1080) * LINE_LENGTH_THRESHOLD) gc.setStroke(Color.YELLOW);
+                gc.setStroke( Color.RED);
                 gc.strokeLine(line.x1 + 0.5, line.y1 + 0.5, line.x2 + 0.5, line.y2 + 0.5);
-                alternate = !alternate;
             }
         }
     }

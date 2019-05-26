@@ -24,7 +24,7 @@ public class Main extends Application {
 
     private Frame frame;
 
-    private int frameCount = 0;
+    private int frameCount = -1;
     private int prevFrameNumber = 0;
 
     private final List<Long> frameTimes = new ArrayList<>();
@@ -49,8 +49,8 @@ public class Main extends Application {
         //final File file = new File("src/main/resources/subtitle3.png");
         grabber = new FFmpegFrameGrabber(file);
         grabber.start();
-        //frameCount = 1800;
-        //grabber.setVideoFrameNumber(frameCount);
+        frameCount = 2170 - 1;
+        grabber.setVideoFrameNumber(frameCount);
 
         mainLayout = loader.getController();
 
