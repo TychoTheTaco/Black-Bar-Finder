@@ -18,8 +18,9 @@
         </padding>
         <Label fx:id="cursor_position_label" text="Position: (x, y)" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
         <Label text="[E] Toggle Overlay" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-        <Label text="[S] Previous Frame" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <Label text="[D] Next Frame" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <Label text="[Q] Toggle Debug" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Label text="[S] Previous Frame" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <Label text="[D] Next Frame" GridPane.columnIndex="4" GridPane.rowIndex="0" />
     </GridPane>
 
     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
@@ -38,7 +39,7 @@
             </GridPane.margin>
         </Separator>
 
-        <Label fx:id="content_size_label" text="Content size: ? by ?" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Label fx:id="content_size_label" text="Content size: ? by ?" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.fillWidth="ALWAYS"/>
         <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
         <Label fx:id="largest_content_size_label" text="Largest content size: ? by ?" GridPane.columnIndex="0" GridPane.rowIndex="5" />

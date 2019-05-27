@@ -7,7 +7,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -115,7 +114,6 @@ public class MainLayout {
         //Find content bounds
         final long start = System.currentTimeMillis();
         final Rectangle contentBounds = contentFinder.findContent(image);
-        System.out.println("Content: " + contentBounds);
         final long elapsed = System.currentTimeMillis() - start;
         //frameTimes.add(elapsed);
 
@@ -174,9 +172,7 @@ public class MainLayout {
                 (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()))
         );
         if (maxContentBounds != null){
-            System.out.println("Width Before: " + largest_content_size_label.getWidth());
             largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
-            System.out.println("Width After : " + largest_content_size_label.getWidth());
             largest_content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             largest_content_size_paneController.setMargins(
                     (int) maxContentBounds.getY(),

@@ -4,10 +4,7 @@ import com.tycho.bbf.layout.MainLayout;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
@@ -24,7 +21,7 @@ public class Main extends Application {
 
     private Frame frame;
 
-    private int frameCount = -1;
+    private int frameNumber = -1;
     private int prevFrameNumber = 0;
 
     private final List<Long> frameTimes = new ArrayList<>();
@@ -49,44 +46,42 @@ public class Main extends Application {
         //final File file = new File("src/main/resources/subtitle3.png");
         grabber = new FFmpegFrameGrabber(file);
         grabber.start();
-        //frameCount = 3900 - 1;
-        //grabber.setVideoFrameNumber(frameCount);
+        //frameNumber = 3900 - 1;
+        //grabber.setVideoFrameNumber(frameNumber);
 
         mainLayout = loader.getController();
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode().getName()){
                 case "D":
-                    frame = getFrame(++frameCount);
+                    frame = getFrame(++frameNumber);
                     break;
 
                 case "A":
-                    frame = getFrame(--frameCount);
-                    if (frameCount < 1) frameCount = 1;
+                    frame = getFrame(--frameNumber);
+                    if (frameNumber < 0) frameNumber = 0;
                     break;
 
                 case "E":
                     mainLayout.setOverlay(!mainLayout.getOverlay());
                     break;
 
-                case "V":
-                    System.out.println("Average: " + average(frameTimes));
-                    return;
-
-                case "B":
+                case "Q":
                     mainLayout.setDebug(!mainLayout.getDebug());
                     return;
             }
 
             final Image image = new JavaFXFrameConverter().convert(frame);
             mainLayout.setFrame(image);
-            mainLayout.setFrameCount(frameCount);
+            mainLayout.setFrameCount(frameNumber + 1);
+
+            primaryStage.sizeToScene();
         });
 
         //Start on first frame
-        //frame = getFrame(++frameCount);
+        //frame = getFrame(++frameNumber);
         //mainLayout.setFrame(new JavaFXFrameConverter().convert(frame));
-        //mainLayout.setFrameCount(frameCount);
+        //mainLayout.setFrameCount(frameNumber);
     }
 
     private Frame getFrame(final int frameNumber){
