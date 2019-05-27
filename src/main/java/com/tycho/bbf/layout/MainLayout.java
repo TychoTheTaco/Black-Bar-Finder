@@ -4,6 +4,7 @@ import com.tycho.bbf.*;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -51,6 +52,12 @@ public class MainLayout {
     @FXML
     private Label cursor_position_label;
 
+    @FXML
+    private CheckBox overlay_checkbox;
+
+    @FXML
+    private CheckBox debug_checkbox;
+
     private GraphicsContext gc;
 
     private final ContentFinder contentFinder = new LineContentFinder();
@@ -77,16 +84,19 @@ public class MainLayout {
             cursor_position_label.setText("Position: (" + x + ", " + y + ")");
         });
 
+        //Set up
         content_size_paneController.setColor(Color.RED);
         largest_content_size_paneController.setColor(Color.GREEN);
         estimated_video_area_paneController.setColor(Color.BLUE);
+
+        //Set up flags
+        overlay_checkbox.setSelected(overlay);
+        debug_checkbox.setSelected(debug);
     }
 
-    private void resizeCanvas(final Image image){
-        System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
+    private void resizeCanvas(final Image image) {
         int w = (int) (video_canvas.getWidth() / 8);
         int h = (int) ((image.getHeight() / image.getWidth()) * w);
-        System.out.println("Calculated size: " + w + " by " + h);
         content_size_paneController.setCanvasSize(w, h);
         largest_content_size_paneController.setCanvasSize(w, h);
         estimated_video_area_paneController.setCanvasSize(w, h);
@@ -99,7 +109,6 @@ public class MainLayout {
         //Scale image to fit canvas
         Image scaledImage = image;
         if (image.getWidth() != video_canvas.getWidth() || image.getHeight() != video_canvas.getHeight()) {
-            System.out.println("Resizing image...");
             final long start = System.currentTimeMillis();
             scaledImage = Utils.scale(image, (int) video_canvas.getWidth(), (int) video_canvas.getHeight(), true);
             System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight() + " in " + (System.currentTimeMillis() - start) + " ms.");
@@ -117,7 +126,7 @@ public class MainLayout {
         final long elapsed = System.currentTimeMillis() - start;
         //frameTimes.add(elapsed);
 
-        setProcessingTime(elapsed);
+        processing_time_label.setText("Processed in " + elapsed + " ms.");
 
         //Calculate maximum content bounds
         if (maxContentBounds == null) maxContentBounds = contentBounds;
@@ -126,7 +135,7 @@ public class MainLayout {
         //Calculate video boundary
         if (videoBoundary == null) videoBoundary = new Rectangle(maxContentBounds.getX(), maxContentBounds.getY(), maxContentBounds.getWidth(), maxContentBounds.getHeight());
         setIfLarger(maxContentBounds, videoBoundary);
-        if (forceSymmetrical){
+        if (forceSymmetrical) {
             final double left = videoBoundary.getX();
             final double right = image.getWidth() - (videoBoundary.getX() + videoBoundary.getWidth());
             final double top = videoBoundary.getY();
@@ -171,7 +180,7 @@ public class MainLayout {
                 (int) (image.getWidth() - (contentBounds.getX() + contentBounds.getWidth())),
                 (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()))
         );
-        if (maxContentBounds != null){
+        if (maxContentBounds != null) {
             largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
             largest_content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             largest_content_size_paneController.setMargins(
@@ -181,7 +190,7 @@ public class MainLayout {
                     (int) (image.getHeight() - (maxContentBounds.getY() + maxContentBounds.getHeight()))
             );
         }
-        if (videoBoundary != null){
+        if (videoBoundary != null) {
             estimated_video_area_label.setText("Video boundary: " + (int) videoBoundary.getWidth() + " by " + (int) videoBoundary.getHeight());
             estimated_video_area_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             estimated_video_area_paneController.setMargins(
@@ -192,8 +201,8 @@ public class MainLayout {
             );
         }
 
-        if (debug){
-            if (contentFinder instanceof LineContentFinder){
+        if (debug) {
+            if (contentFinder instanceof LineContentFinder) {
                 //Scale to fit canvas
                 gc.save();
                 gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
@@ -206,7 +215,7 @@ public class MainLayout {
         }
     }
 
-    private void setIfLarger(final Rectangle a, final Rectangle b){
+    private void setIfLarger(final Rectangle a, final Rectangle b) {
         if (a.getWidth() + a.getHeight() == 0) return;
         if (a.getX() < b.getX()) b.setX(a.getX());
         if (a.getY() < b.getY()) b.setY(a.getY());
@@ -214,29 +223,27 @@ public class MainLayout {
         if (a.getY() + a.getHeight() > b.getY() + b.getHeight()) b.setHeight(a.getY() + a.getHeight() - b.getY());
     }
 
-    public boolean getOverlay(){
+    public boolean getOverlay() {
         return this.overlay;
     }
 
-    public void setOverlay(final boolean overlay){
+    public void setOverlay(final boolean overlay) {
         this.overlay = overlay;
+        overlay_checkbox.setSelected(overlay);
         setFrame(this.image);
     }
 
-    public boolean getDebug(){
+    public boolean getDebug() {
         return this.debug;
     }
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+        debug_checkbox.setSelected(debug);
         setFrame(this.image);
     }
 
     public void setFrameCount(final int frameNumber) {
         frame_count_label.setText("Frame: " + frameNumber);
-    }
-
-    public void setProcessingTime(final long processingTime) {
-        processing_time_label.setText("Processed in " + processingTime + " ms.");
     }
 }
