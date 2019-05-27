@@ -11,7 +11,7 @@
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.tycho.bbf.layout.MainLayout">
 
-    <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1280" height="720"/>
+    <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1920" height="1080"/>
 
     <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1"  hgap="15">
         <padding>
@@ -20,8 +20,9 @@
         <Label fx:id="cursor_position_label" text="Position: (x, y)" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
         <Label text="[E] Toggle Overlay" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         <Label text="[Q] Toggle Debug" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-        <Label text="[S] Previous Frame" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-        <Label text="[D] Next Frame" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+        <Label text="[R] Reset" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <Label text="[S] Previous Frame" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+        <Label text="[D] Next Frame" GridPane.columnIndex="5" GridPane.rowIndex="0" />
     </GridPane>
 
     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
@@ -55,8 +56,9 @@
             </GridPane.margin>
         </Separator>
 
-        <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="10" disable="true"/>
-        <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="11" disable="true"/>
+        <Label fx:id="content_finder_label" text="Content Finder: ?" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+        <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11" disable="true"/>
+        <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>
     </GridPane>
 
 </GridPane>

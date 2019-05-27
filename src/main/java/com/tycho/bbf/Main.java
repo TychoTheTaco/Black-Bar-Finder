@@ -12,21 +12,24 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
+    /**
+     * FrameGrabber used to extract frames from source video.
+     */
     private FFmpegFrameGrabber grabber;
 
+    /**
+     * The current frame being displayed.
+     */
     private Frame frame;
 
     private int frameNumber = -1;
     private int prevFrameNumber = 0;
 
-    private final List<Long> frameTimes = new ArrayList<>();
-
-    private MainLayout mainLayout;
+    private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder()};
+    private int contentFinderIndex = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -42,23 +45,28 @@ public class Main extends Application {
         primaryStage.show();
 
         final File file = new File("src/main/resources/blessings.mp4");
+        //final File file = new File("src/main/resources/la_vibes.mp4");
         //final File file = new File("src/main/resources/limitless.mp4");
         //final File file = new File("src/main/resources/subtitle3.png");
         grabber = new FFmpegFrameGrabber(file);
         grabber.start();
-        //frameNumber = 3900 - 1;
+        //frameNumber = 7420 - 1;
         //grabber.setVideoFrameNumber(frameNumber);
 
-        mainLayout = loader.getController();
+        final MainLayout mainLayout = loader.getController();
+        mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
 
         scene.setOnKeyPressed(event -> {
+            final Frame previousFrame = frame;
             switch (event.getCode().getName()){
                 case "D":
                     frame = getFrame(++frameNumber);
+                    if (frame == previousFrame) --frameNumber;
                     break;
 
                 case "A":
                     frame = getFrame(--frameNumber);
+                    if (frame == previousFrame) ++frameNumber;
                     if (frameNumber < 0) frameNumber = 0;
                     break;
 
@@ -69,6 +77,22 @@ public class Main extends Application {
                 case "Q":
                     mainLayout.setDebug(!mainLayout.getDebug());
                     return;
+
+                case "W":
+                    contentFinderIndex++;
+                    if (contentFinderIndex >= contentFinders.length) contentFinderIndex = 0;
+                    mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
+                    break;
+
+                case "S":
+                    contentFinderIndex--;
+                    if (contentFinderIndex < 0) contentFinderIndex = contentFinders.length - 1;
+                    mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
+                    break;
+
+                case "R":
+                    mainLayout.reset();
+                    break;
             }
 
             final Image image = new JavaFXFrameConverter().convert(frame);
@@ -96,18 +120,12 @@ public class Main extends Application {
                 frame = grabber.grab();
             }
             prevFrameNumber = frameNumber;
-            return frame;
+            return frame.clone();
+        }catch (NullPointerException e){
+            //Ignore
         }catch (FrameGrabber.Exception e){
             e.printStackTrace();
         }
-        return null;
-    }
-
-    private static long average(final List<Long> list){
-        long total = 0;
-        for (long n : list){
-            total += n;
-        }
-        return total / list.size();
+        return this.frame;
     }
 }

@@ -17,9 +17,17 @@ public class LineContentFinder extends ContentFinder {
     private static final int MAX_X_SKIP = 8;
     private static final int MAX_Y_SKIP = 4;
 
+    /**
+     * The minimum value for a pixel to be considered 'content'. This value is compared against the average of a pixel's RGB values.
+     */
+    private static final double IMG_THRESHOLD = 0.01;
+
+    /**
+     * Minimum line length for a piece of content to be considered important. This value represents a percentage of the source width.
+     */
     private static final double LINE_LENGTH_THRESHOLD = 0.015;
 
-    public List<Line> debug_lines = new ArrayList<>();
+    private List<Line> debug_lines = new ArrayList<>();
 
     private Image image = null;
 
@@ -29,7 +37,7 @@ public class LineContentFinder extends ContentFinder {
         final int HEIGHT = (int) frame.getHeight();
         debug_lines.clear();
 
-        //image = frame;
+        image = frame;
 
         int top = 0;
         int bottom = HEIGHT - 1;
@@ -236,7 +244,7 @@ public class LineContentFinder extends ContentFinder {
             }
         }
 
-        if (debug_lines.size() == 0){
+        if (debug_lines.size() < 3){
             return new Rectangle();
         }else{
             return boundingBox(debug_lines);
@@ -281,8 +289,6 @@ public class LineContentFinder extends ContentFinder {
             return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         }
     }
-
-    private static double IMG_THRESHOLD = 0.01;
 
     public void drawDebug(final GraphicsContext gc, boolean drawLines){
         if (image != null) gc.drawImage(threshold(image, IMG_THRESHOLD), 0, 0);
