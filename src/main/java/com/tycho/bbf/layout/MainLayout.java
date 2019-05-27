@@ -1,13 +1,11 @@
 package com.tycho.bbf.layout;
 
 import com.tycho.bbf.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -71,46 +69,39 @@ public class MainLayout {
     private void initialize() {
         gc = video_canvas.getGraphicsContext2D();
 
+        //Set up video canvas
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, video_canvas.getWidth(), video_canvas.getHeight());
-
-        video_canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Click: " + event.getX() + " " + event.getY());
-            }
+        video_canvas.setOnMouseMoved(event -> {
+            final int x = (int) (image == null ? event.getX() : ((event.getX() / video_canvas.getWidth()) * image.getWidth()));
+            final int y = (int) (image == null ? event.getY() : ((event.getY() / video_canvas.getHeight()) * image.getHeight()));
+            cursor_position_label.setText("Position: (" + x + ", " + y + ")");
         });
-        video_canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                final int x = (int) (image == null ? event.getX() : ((event.getX() / video_canvas.getWidth()) * image.getWidth()));
-                final int y = (int) (image == null ? event.getY() : ((event.getY() / video_canvas.getHeight()) * image.getHeight()));
-                cursor_position_label.setText("Position: (" + x + ", " + y + ")");
-            }
-        });
-
-        System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
-        int w = (int) (video_canvas.getWidth() / 8);
-        int h = (int) ((9f / 16) * w);
-        System.out.println("Calculated size: " + w + " by " + h);
-        setPrefAndMax(content_size_pane, w, h);
-        setPrefAndMax(largest_content_size_pane, w, h);
-        setPrefAndMax(estimated_video_area_pane, w, h);
 
         content_size_paneController.setColor(Color.RED);
         largest_content_size_paneController.setColor(Color.GREEN);
         estimated_video_area_paneController.setColor(Color.BLUE);
     }
 
-    private void setPrefAndMax(final Pane pane, final int width, final int height){
-        pane.setPrefWidth(width);
-        pane.setMaxWidth(width);
-        pane.setPrefHeight(height);
-        pane.setMaxHeight(height);
+    private void setSize(final Pane pane, final int width, final int height){
+        pane.setMinSize(width, height);
+        pane.setMaxSize(width, height);
+        pane.setPrefSize(width, height);
+    }
+
+    private void resizeCanvas(final Image image){
+        System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
+        int w = (int) (video_canvas.getWidth() / 8);
+        int h = (int) ((image.getHeight() / image.getWidth()) * w);
+        System.out.println("Calculated size: " + w + " by " + h);
+        setSize(content_size_pane, w, h);
+        setSize(largest_content_size_pane, w, h);
+        setSize(estimated_video_area_pane, w, h);
     }
 
     public void setFrame(final Image image) {
         this.image = image;
+        resizeCanvas(image);
 
         System.out.println("New size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
 
@@ -182,6 +173,7 @@ public class MainLayout {
         }
 
         content_size_label.setText("Content size: " + (int) contentBounds.getWidth() + " by " + (int) contentBounds.getHeight());
+        content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
         content_size_paneController.setMargins(
                 (int) contentBounds.getY(),
                 (int) contentBounds.getX(),
@@ -190,6 +182,7 @@ public class MainLayout {
         );
         if (maxContentBounds != null){
             largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
+            largest_content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             largest_content_size_paneController.setMargins(
                     (int) maxContentBounds.getY(),
                     (int) maxContentBounds.getX(),
@@ -199,6 +192,7 @@ public class MainLayout {
         }
         if (videoBoundary != null){
             estimated_video_area_label.setText("Video boundary: " + (int) videoBoundary.getWidth() + " by " + (int) videoBoundary.getHeight());
+            estimated_video_area_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             estimated_video_area_paneController.setMargins(
                     (int) videoBoundary.getY(),
                     (int) videoBoundary.getX(),
