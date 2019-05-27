@@ -1,20 +1,12 @@
 package com.tycho.bbf.layout;
 
-import com.tycho.bbf.ContentFinder;
-import com.tycho.bbf.LineContentFinder;
-import com.tycho.bbf.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -25,10 +17,10 @@ public class ContentAreaLayout {
     private StackPane root;
 
     @FXML
-    private BorderPane borderPane;
+    private Canvas background_canvas;
 
     @FXML
-    private Canvas background_canvas;
+    private BorderPane border_pane;
 
     @FXML
     private Label top;
@@ -51,11 +43,23 @@ public class ContentAreaLayout {
 
     @FXML
     private void initialize() {
-        System.out.println("Initialize ContentAreaLayout!");
-        background_canvas.widthProperty().bind(root.widthProperty());
-        background_canvas.heightProperty().bind(root.heightProperty());
-        background_canvas.widthProperty().addListener((observable, oldValue, newValue) -> draw());
-        background_canvas.heightProperty().addListener((observable, oldValue, newValue) -> draw());
+        background_canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+            border_pane.setMinWidth((double) newValue);
+            border_pane.setMaxWidth((double) newValue);
+            border_pane.setPrefWidth((double) newValue);
+            draw();
+        });
+        background_canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
+            border_pane.setMinHeight((double) newValue);
+            border_pane.setMaxHeight((double) newValue);
+            border_pane.setPrefHeight((double) newValue);
+            draw();
+        });
+    }
+
+    public void setCanvasSize(final double width, final double height){
+        this.background_canvas.setWidth(width);
+        this.background_canvas.setHeight(height);
     }
 
     public void setContentSize(final int width, final int height){
@@ -64,8 +68,7 @@ public class ContentAreaLayout {
     }
 
     public void setMargins(final int top, final int left, final int right, final int bottom){
-        System.out.println("Set margins on canvas size: " + background_canvas.getWidth() + " by " + background_canvas.getHeight());
-        //System.out.println("Set margins on root size: " + root.getWidth() + " by " + root.getHeight());
+        System.out.println("Root Width: " + root.getWidth());
         this.top.setText(String.valueOf(top));
         this.left.setText(String.valueOf(left));
         this.right.setText(String.valueOf(right));
@@ -75,10 +78,6 @@ public class ContentAreaLayout {
         final double l = (float) left / maxContentWidth;
         final double r = (float) right / maxContentWidth;
         final double b = (float) bottom / maxContentHeight;
-        System.out.println("T: " + t);
-        System.out.println("L: " + l);
-        System.out.println("R: " + r);
-        System.out.println("B: " + b);
 
         this.rectangle.setX(l);
         this.rectangle.setY(t);
@@ -89,9 +88,8 @@ public class ContentAreaLayout {
     }
 
     private void draw(){
-        System.out.println("Draw: " + this.rectangle);
-        System.out.println("Canvas size: " + background_canvas.getWidth() + " by " + background_canvas.getHeight());
         final GraphicsContext gc = background_canvas.getGraphicsContext2D();
+
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, background_canvas.getWidth(), background_canvas.getHeight());
 

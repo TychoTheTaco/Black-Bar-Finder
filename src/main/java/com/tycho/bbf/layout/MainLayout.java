@@ -23,13 +23,13 @@ public class MainLayout {
     public Canvas video_canvas;
 
     @FXML
-    public StackPane content_size_pane;
+    public Pane content_size_pane;
 
     @FXML
-    public StackPane largest_content_size_pane;
+    public Pane largest_content_size_pane;
 
     @FXML
-    public StackPane estimated_video_area_pane;
+    public Pane estimated_video_area_pane;
 
     @FXML
     private ContentAreaLayout content_size_paneController;
@@ -83,34 +83,27 @@ public class MainLayout {
         estimated_video_area_paneController.setColor(Color.BLUE);
     }
 
-    private void setSize(final Pane pane, final int width, final int height){
-        pane.setMinSize(width, height);
-        pane.setMaxSize(width, height);
-        pane.setPrefSize(width, height);
-    }
-
     private void resizeCanvas(final Image image){
         System.out.println("Current size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
         int w = (int) (video_canvas.getWidth() / 8);
         int h = (int) ((image.getHeight() / image.getWidth()) * w);
         System.out.println("Calculated size: " + w + " by " + h);
-        setSize(content_size_pane, w, h);
-        setSize(largest_content_size_pane, w, h);
-        setSize(estimated_video_area_pane, w, h);
+        content_size_paneController.setCanvasSize(w, h);
+        largest_content_size_paneController.setCanvasSize(w, h);
+        estimated_video_area_paneController.setCanvasSize(w, h);
     }
 
     public void setFrame(final Image image) {
         this.image = image;
         resizeCanvas(image);
 
-        System.out.println("New size: " + content_size_pane.getWidth() + " by " + content_size_pane.getHeight());
-
         //Scale image to fit canvas
         Image scaledImage = image;
         if (image.getWidth() != video_canvas.getWidth() || image.getHeight() != video_canvas.getHeight()) {
             System.out.println("Resizing image...");
+            final long start = System.currentTimeMillis();
             scaledImage = Utils.scale(image, (int) video_canvas.getWidth(), (int) video_canvas.getHeight(), true);
-            System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight());
+            System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight() + " in " + (System.currentTimeMillis() - start) + " ms.");
         }
 
         //Clear canvas
@@ -181,7 +174,9 @@ public class MainLayout {
                 (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()))
         );
         if (maxContentBounds != null){
+            System.out.println("Width Before: " + largest_content_size_label.getWidth());
             largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
+            System.out.println("Width After : " + largest_content_size_label.getWidth());
             largest_content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
             largest_content_size_paneController.setMargins(
                     (int) maxContentBounds.getY(),

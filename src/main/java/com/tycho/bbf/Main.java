@@ -84,9 +84,9 @@ public class Main extends Application {
         });
 
         //Start on first frame
-        frame = getFrame(++frameCount);
-        mainLayout.setFrame(new JavaFXFrameConverter().convert(frame));
-        mainLayout.setFrameCount(frameCount);
+        //frame = getFrame(++frameCount);
+        //mainLayout.setFrame(new JavaFXFrameConverter().convert(frame));
+        //mainLayout.setFrameCount(frameCount);
     }
 
     private Frame getFrame(final int frameNumber){
