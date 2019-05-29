@@ -2,37 +2,22 @@ package com.tycho.bbf;
 
 import com.tycho.bbf.layout.MainLayout;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
 
 public class Main extends Application {
 
-    /**
-     * FrameGrabber used to extract frames from source video.
-     */
-    private FFmpegFrameGrabber grabber;
-
-    /**
-     * The current frame being displayed.
-     */
-    private Frame frame;
-
-    private int frameNumber = -1;
-    private int prevFrameNumber = 0;
-
     private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder()};
     private int contentFinderIndex = 0;
 
     private boolean running = false;
+
+    private static final Object LOCK = new Object();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -51,8 +36,7 @@ public class Main extends Application {
         //final File file = new File("src/main/resources/la_vibes.mp4");
         //final File file = new File("src/main/resources/limitless.mp4");
         //final File file = new File("src/main/resources/subtitle3.png");
-        grabber = new FFmpegFrameGrabber(file);
-        grabber.start();
+        final FrameExtractor frameExtractor = new FrameExtractor(file);
         //frameNumber = 7420 - 1;
         //grabber.setVideoFrameNumber(frameNumber);
 
@@ -60,17 +44,13 @@ public class Main extends Application {
         mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
 
         scene.setOnKeyPressed(event -> {
-            final Frame previousFrame = frame;
             switch (event.getCode().getName()){
                 case "D":
-                    frame = getFrame(++frameNumber);
-                    if (frame == previousFrame) --frameNumber;
+                    frameExtractor.nextFrame();
                     break;
 
                 case "A":
-                    frame = getFrame(--frameNumber);
-                    if (frame == previousFrame) ++frameNumber;
-                    if (frameNumber < 0) frameNumber = 0;
+                    frameExtractor.previousFrame();
                     break;
 
                 case "E":
@@ -99,9 +79,10 @@ public class Main extends Application {
 
                 case "P":
                     running = !running;
-                    if (running){
+                    /*if (running){
                         new Thread(() -> {
                             while (running){
+                                //Get the next frame from the source video
                                 final Frame frame = getFrame(++frameNumber);
                                 if (frame == previousFrame){
                                     --frameNumber;
@@ -109,50 +90,41 @@ public class Main extends Application {
                                     break;
                                 }
                                 this.frame = frame;
+
+                                //Convert frame to image
                                 final Image image = new JavaFXFrameConverter().convert(frame);
+
+                                //Update UI
                                 Platform.runLater(() -> {
                                     mainLayout.setFrame(image);
                                     mainLayout.setFrameCount(frameNumber + 1);
+
+                                    synchronized (LOCK){
+                                        LOCK.notifyAll();
+                                    }
                                 });
 
-                                try{
-                                    Thread.sleep(30);
-                                }catch (InterruptedException e){}
+                                try {
+                                    synchronized (LOCK){
+                                        LOCK.wait();
+                                    }
+                                }catch (InterruptedException e){
+                                    e.printStackTrace();
+                                }
                             }
                         }).start();
-                    }
+                    }*/
                     return;
             }
 
-            final Image image = new JavaFXFrameConverter().convert(frame);
+            final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
             mainLayout.setFrame(image);
-            mainLayout.setFrameCount(frameNumber + 1);
+            mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
         });
 
         //Start on first frame
         //frame = getFrame(++frameNumber);
         //mainLayout.setFrame(new JavaFXFrameConverter().convert(frame));
         //mainLayout.setFrameCount(frameNumber);
-    }
-
-    private Frame getFrame(final int frameNumber){
-        try {
-            Frame frame;
-            if (frameNumber == prevFrameNumber + 1){
-                do{
-                    frame = grabber.grab();
-                }while (frame.imageWidth == 0);
-            }else{
-                grabber.setVideoFrameNumber(frameNumber);
-                frame = grabber.grab();
-            }
-            prevFrameNumber = frameNumber;
-            return frame.clone();
-        }catch (NullPointerException e){
-            //Ignore
-        }catch (FrameGrabber.Exception e){
-            e.printStackTrace();
-        }
-        return this.frame;
     }
 }

@@ -42,7 +42,7 @@
                 <Label text="[D] Next Frame" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
             </GridPane>
 
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2" prefWidth="270">
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
                 <GridPane.margin>
                     <Insets left="5"/>
                 </GridPane.margin>
@@ -81,7 +81,7 @@
                     </GridPane.margin>
                 </Separator>
 
-                <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+                <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10" prefWidth="250"/>
                 <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
                           disable="true"/>
                 <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>

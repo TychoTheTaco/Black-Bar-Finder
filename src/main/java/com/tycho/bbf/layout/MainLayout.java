@@ -98,7 +98,7 @@ public class MainLayout {
 
     public void setFrame(final Image image) {
         this.image = image;
-        resizeCanvas(image);
+        //resizeCanvas(image);
 
         //Scale image to fit canvas
         Image scaledImage = image;
