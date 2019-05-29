@@ -22,6 +22,9 @@
         <left>
             <Label fx:id="left" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt; -fx-text-fill: white;"/>
         </left>
+        <center>
+            <Label fx:id="content_size" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt; -fx-text-fill: white;"/>
+        </center>
         <right>
             <Label fx:id="right" BorderPane.alignment="CENTER" style="-fx-font-size: 10pt; -fx-text-fill: white;"/>
         </right>

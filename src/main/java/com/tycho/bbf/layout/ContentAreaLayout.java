@@ -23,6 +23,9 @@ public class ContentAreaLayout {
     private Label left;
 
     @FXML
+    private Label content_size;
+
+    @FXML
     private Label right;
 
     @FXML
@@ -43,12 +46,6 @@ public class ContentAreaLayout {
             border_pane.setPrefWidth((double) newValue);
             draw();
         });
-        background_canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            border_pane.setMinHeight((double) newValue);
-            border_pane.setMaxHeight((double) newValue);
-            border_pane.setPrefHeight((double) newValue);
-            draw();
-        });
     }
 
     public void setCanvasSize(final double width, final double height){
@@ -56,9 +53,13 @@ public class ContentAreaLayout {
         this.background_canvas.setHeight(height);
     }
 
-    public void setContentSize(final int width, final int height){
+    public void setMaxContentSize(final int width, final int height){
         maxContentWidth = width;
         maxContentHeight = height;
+    }
+
+    public void setContentSize(final int width, final int height){
+        this.content_size.setText("(" + width + " x " + height + ")");
     }
 
     public void setMargins(final int top, final int left, final int right, final int bottom){

@@ -98,8 +98,6 @@ public class Main extends Application {
             final Image image = new JavaFXFrameConverter().convert(frame);
             mainLayout.setFrame(image);
             mainLayout.setFrameCount(frameNumber + 1);
-
-            primaryStage.sizeToScene();
         });
 
         //Start on first frame

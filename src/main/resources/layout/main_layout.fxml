@@ -27,7 +27,7 @@
 
     <center>
         <GridPane>
-            <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="640" height="480"/>
+            <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1280" height="720"/>
 
             <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" hgap="15">
                 <padding>
@@ -42,7 +42,7 @@
                 <Label text="[D] Next Frame" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
             </GridPane>
 
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2" prefWidth="270">
                 <GridPane.margin>
                     <Insets left="5"/>
                 </GridPane.margin>
@@ -58,27 +58,30 @@
                     </GridPane.margin>
                 </Separator>
 
-                <Label fx:id="content_size_label" text="Content size: ? by ?" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0"
-                            GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
+                <Label text="Content Size" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER"/>
+                <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
-                <Label fx:id="largest_content_size_label" text="Largest content size: ? by ?" GridPane.columnIndex="0"
-                       GridPane.rowIndex="5"/>
-                <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0"
-                            GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
+                <Label text="Largest Content Size" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.halignment="CENTER">
+                    <GridPane.margin>
+                        <Insets top="10"/>
+                    </GridPane.margin>
+                </Label>
+                <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
 
-                <Label fx:id="estimated_video_area_label" text="Estimated video area: ? by ?" GridPane.columnIndex="0"
-                       GridPane.rowIndex="7"/>
-                <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0"
-                            GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
+                <Label text="Video Boundary" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.halignment="CENTER">
+                    <GridPane.margin>
+                        <Insets top="10"/>
+                    </GridPane.margin>
+                </Label>
+                <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
 
                 <Separator GridPane.columnIndex="0" GridPane.rowIndex="9">
                     <GridPane.margin>
-                        <Insets top="5" bottom="5"/>
+                        <Insets top="10" bottom="5"/>
                     </GridPane.margin>
                 </Separator>
 
-                <Label fx:id="content_finder_label" text="Content Finder: ?" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+                <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
                 <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
                           disable="true"/>
                 <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>

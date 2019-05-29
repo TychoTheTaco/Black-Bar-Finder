@@ -1,15 +1,12 @@
 package com.tycho.bbf.layout;
 
 import com.tycho.bbf.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -42,15 +39,6 @@ public class MainLayout {
 
     @FXML
     private ContentAreaLayout estimated_video_area_paneController;
-
-    @FXML
-    private Label content_size_label;
-
-    @FXML
-    private Label largest_content_size_label;
-
-    @FXML
-    private Label estimated_video_area_label;
 
     @FXML
     private Label cursor_position_label;
@@ -178,24 +166,24 @@ public class MainLayout {
             gc.restore();
         }
 
-        content_size_label.setText("Content size: " + (int) contentBounds.getWidth() + " by " + (int) contentBounds.getHeight());
-        content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
+        content_size_paneController.setMaxContentSize((int) image.getWidth(), (int) image.getHeight());
+        content_size_paneController.setContentSize((int) contentBounds.getWidth(), (int) contentBounds.getHeight());
         content_size_paneController.setMargins(
                 (int) contentBounds.getY(),
                 (int) contentBounds.getX(),
                 (int) (image.getWidth() - (contentBounds.getX() + contentBounds.getWidth())),
                 (int) (image.getHeight() - (contentBounds.getY() + contentBounds.getHeight()))
         );
-        largest_content_size_label.setText("Largest content size: " + (int) maxContentBounds.getWidth() + " by " + (int) maxContentBounds.getHeight());
-        largest_content_size_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
+        largest_content_size_paneController.setMaxContentSize((int) image.getWidth(), (int) image.getHeight());
+        largest_content_size_paneController.setContentSize((int) maxContentBounds.getWidth(), (int) maxContentBounds.getHeight());
         largest_content_size_paneController.setMargins(
                 (int) maxContentBounds.getY(),
                 (int) maxContentBounds.getX(),
                 (int) (image.getWidth() - (maxContentBounds.getX() + maxContentBounds.getWidth())),
                 (int) (image.getHeight() - (maxContentBounds.getY() + maxContentBounds.getHeight()))
         );
-        estimated_video_area_label.setText("Video boundary: " + (int) videoBoundary.getWidth() + " by " + (int) videoBoundary.getHeight());
-        estimated_video_area_paneController.setContentSize((int) image.getWidth(), (int) image.getHeight());
+        estimated_video_area_paneController.setMaxContentSize((int) image.getWidth(), (int) image.getHeight());
+        estimated_video_area_paneController.setContentSize((int) videoBoundary.getWidth(), (int) videoBoundary.getHeight());
         estimated_video_area_paneController.setMargins(
                 (int) videoBoundary.getY(),
                 (int) videoBoundary.getX(),
@@ -256,7 +244,7 @@ public class MainLayout {
 
     public void setContentFinder(ContentFinder contentFinder) {
         this.contentFinder = contentFinder;
-        this.content_finder_label.setText("Content Finder: " + contentFinder.getClass().getSimpleName());
+        this.content_finder_label.setText("Algorithm: " + contentFinder.getClass().getSimpleName());
     }
 
     public void reset() {
