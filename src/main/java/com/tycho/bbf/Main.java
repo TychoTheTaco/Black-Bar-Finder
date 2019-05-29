@@ -2,6 +2,7 @@ package com.tycho.bbf;
 
 import com.tycho.bbf.layout.MainLayout;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -30,6 +31,8 @@ public class Main extends Application {
 
     private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder()};
     private int contentFinderIndex = 0;
+
+    private boolean running = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -93,6 +96,32 @@ public class Main extends Application {
                 case "R":
                     mainLayout.reset();
                     break;
+
+                case "P":
+                    running = !running;
+                    if (running){
+                        new Thread(() -> {
+                            while (running){
+                                final Frame frame = getFrame(++frameNumber);
+                                if (frame == previousFrame){
+                                    --frameNumber;
+                                    running = false;
+                                    break;
+                                }
+                                this.frame = frame;
+                                final Image image = new JavaFXFrameConverter().convert(frame);
+                                Platform.runLater(() -> {
+                                    mainLayout.setFrame(image);
+                                    mainLayout.setFrameCount(frameNumber + 1);
+                                });
+
+                                try{
+                                    Thread.sleep(30);
+                                }catch (InterruptedException e){}
+                            }
+                        }).start();
+                    }
+                    return;
             }
 
             final Image image = new JavaFXFrameConverter().convert(frame);
