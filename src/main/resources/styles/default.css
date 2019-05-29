@@ -9,3 +9,11 @@
     -fx-text-fill: black;
     -fx-opacity: 1
 }
+
+.menu .label{
+    -fx-font-size: 10pt;
+}
+
+.menu-item .label {
+    -fx-font-size: 10pt;
+}

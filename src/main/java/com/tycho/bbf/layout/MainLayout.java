@@ -1,12 +1,15 @@
 package com.tycho.bbf.layout;
 
 import com.tycho.bbf.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -220,6 +223,11 @@ public class MainLayout {
         if (a.getY() < b.getY() || (b.getWidth() + b.getHeight() == 0)) b.setY(a.getY());
         if (a.getX() + a.getWidth() > b.getX() + b.getWidth() || (b.getWidth() + b.getHeight() == 0)) b.setWidth(a.getX() + a.getWidth() - b.getX());
         if (a.getY() + a.getHeight() > b.getY() + b.getHeight() || (b.getWidth() + b.getHeight() == 0)) b.setHeight(a.getY() + a.getHeight() - b.getY());
+    }
+
+    @FXML
+    private void onOpenClicked(){
+        System.out.println("Open clicked!");
     }
 
     public boolean getOverlay() {
