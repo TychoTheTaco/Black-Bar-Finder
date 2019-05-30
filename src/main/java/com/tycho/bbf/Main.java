@@ -12,7 +12,7 @@ import java.io.File;
 
 public class Main extends Application {
 
-    private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder()};
+    private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder(), new StrictLineContentFinder()};
     private int contentFinderIndex = 0;
 
     private boolean running = false;

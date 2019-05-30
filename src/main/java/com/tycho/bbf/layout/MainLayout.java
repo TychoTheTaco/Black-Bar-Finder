@@ -202,6 +202,17 @@ public class MainLayout {
                 //Restore scaling
                 gc.restore();
             }
+
+            if (contentFinder instanceof Debuggable){
+                //Scale to fit canvas
+                gc.save();
+                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
+
+                ((Debuggable) contentFinder).drawDebug(gc);
+
+                //Restore scaling
+                gc.restore();
+            }
         }
     }
 
@@ -248,7 +259,7 @@ public class MainLayout {
     }
 
     public void reset() {
-        this.maxContentBounds = null;
-        this.videoBoundary = null;
+        this.maxContentBounds = new Rectangle();
+        this.videoBoundary = new Rectangle();
     }
 }
