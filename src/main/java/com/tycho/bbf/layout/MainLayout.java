@@ -2,13 +2,18 @@ package com.tycho.bbf.layout;
 
 import com.sun.jndi.toolkit.url.Uri;
 import com.tycho.bbf.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -59,6 +64,9 @@ public class MainLayout {
     @FXML
     private CheckBox debug_checkbox;
 
+    @FXML
+    private VBox properties;
+
     private GraphicsContext gc;
 
     private ContentFinder contentFinder;
@@ -101,6 +109,16 @@ public class MainLayout {
         //Set up flags
         overlay_checkbox.setSelected(overlay);
         debug_checkbox.setSelected(debug);
+
+       /* slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            slider_value.setText("Value: " + newValue);
+
+            if (contentFinder instanceof DefaultContentFinder){
+                contentFinder.getProperties().get("threshold").setValue(newValue.floatValue());
+            }
+
+            setFrame(image);
+        });*/
     }
 
     private void resizeCanvas(final Image image) {
@@ -265,6 +283,21 @@ public class MainLayout {
     public void setContentFinder(ContentFinder contentFinder) {
         this.contentFinder = contentFinder;
         this.content_finder_label.setText("Algorithm: " + contentFinder.getClass().getSimpleName());
+
+        for (ContentFinder.Property property : contentFinder.getProperties().values()){
+            try {
+                final FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/property_layout.fxml"));
+                properties.getChildren().add(loader.load());
+                final PropertyLayout propertyLayout = loader.getController();
+                propertyLayout.setProperty((ContentFinder.RangedProperty) property);
+                propertyLayout.getSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
+                    property.setValue(newValue);
+                    setFrame(image);
+                });
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     public void reset() {

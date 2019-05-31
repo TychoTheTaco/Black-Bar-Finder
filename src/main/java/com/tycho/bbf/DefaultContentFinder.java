@@ -1,6 +1,5 @@
 package com.tycho.bbf;
 
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
@@ -10,12 +9,14 @@ import static com.tycho.bbf.Utils.almostEqual;
 
 public class DefaultContentFinder extends ContentFinder{
 
-    //Decrease for higher accuracy, Increase for more speed
-    private static final int MAX_X_SKIP = 4;
-    private static final int MAX_Y_SKIP = 4;
+    public DefaultContentFinder(){
+        //Decrease for higher accuracy, Increase for more speed
+        getProperties().put("max_x_skip", new RangedProperty("max_x_skip", 4, 1, 64));
+        getProperties().put("max_y_skip", new RangedProperty("max_y_skip", 4, 1, 64));
 
-    //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
-    private static final float THRESHOLD = 0.02f;
+        //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
+        getProperties().put("threshold", new RangedProperty("threshold", 0.02f, 0, 1));
+    }
 
     @Override
     public Rectangle findContent(Image frame) {
@@ -24,10 +25,14 @@ public class DefaultContentFinder extends ContentFinder{
 
         final PixelReader pixelReader = frame.getPixelReader();
 
+        //Read properties
+        final int MAX_X_SKIP = ((Number) getProperties().get("max_x_skip").getValue()).intValue();
+        final int MAX_Y_SKIP = ((Number) getProperties().get("max_y_skip").getValue()).intValue();
+        final float THRESHOLD = ((Number) getProperties().get("threshold").getValue()).floatValue();
+
         int minX = WIDTH;
         int minY = HEIGHT;
         Color initialColor = pixelReader.getColor(0, 0);
-        boolean hit = false;
         int xSkip = MAX_X_SKIP;
         int ySkip = MAX_Y_SKIP;
 
@@ -56,12 +61,6 @@ public class DefaultContentFinder extends ContentFinder{
                     if (y < minY) minY = y;
                     xSkip = MAX_X_SKIP;
                     ySkip = MAX_Y_SKIP;
-
-                    //Debug
-                    /*if (!hit){
-                        a = new Point2D(x, y);
-                        hit = true;
-                    }*/
                 }
             }
         }
@@ -69,7 +68,6 @@ public class DefaultContentFinder extends ContentFinder{
         int maxX = 0;
         int maxY = 0;
         initialColor = pixelReader.getColor(WIDTH - 1, HEIGHT - 1);
-        hit = false;
         xSkip = MAX_X_SKIP;
         ySkip = MAX_Y_SKIP;
 
@@ -97,12 +95,6 @@ public class DefaultContentFinder extends ContentFinder{
                     if (y > maxY) maxY = y;
                     xSkip = MAX_X_SKIP;
                     ySkip =  MAX_Y_SKIP;
-
-                    //Debug
-                    /*if (!hit){
-                        b = new Point2D(x, y);
-                        hit = true;
-                    }*/
                 }
             }
         }

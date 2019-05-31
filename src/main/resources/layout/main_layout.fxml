@@ -7,6 +7,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Slider?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.tycho.bbf.layout.MainLayout">
@@ -45,12 +46,12 @@
         <Label text="Content Size" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER"/>
         <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
-        <Label text="Largest Content Size" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.halignment="CENTER">
+        <Label text="Largest Content Size" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.halignment="CENTER">
             <GridPane.margin>
                 <Insets top="10"/>
             </GridPane.margin>
         </Label>
-        <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
+        <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
         <Label text="Video Boundary" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.halignment="CENTER">
             <GridPane.margin>
@@ -69,5 +70,20 @@
         <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
                   disable="true"/>
         <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>
+
+        <Separator GridPane.columnIndex="0" GridPane.rowIndex="13">
+            <GridPane.margin>
+                <Insets top="10" bottom="5"/>
+            </GridPane.margin>
+        </Separator>
+
+        <Label text="Properties" GridPane.columnIndex="0" GridPane.rowIndex="14">
+            <GridPane.margin>
+                <Insets top="5" bottom="5"/>
+            </GridPane.margin>
+        </Label>
+
+        <VBox fx:id="properties" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+
     </GridPane>
 </GridPane>
