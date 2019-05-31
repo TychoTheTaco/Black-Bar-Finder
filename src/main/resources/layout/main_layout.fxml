@@ -27,7 +27,7 @@
 
     <center>
         <GridPane>
-            <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1280" height="720"/>
+            <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1920" height="1080"/>
 
             <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" hgap="15">
                 <padding>

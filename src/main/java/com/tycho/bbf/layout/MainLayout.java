@@ -108,8 +108,20 @@ public class MainLayout {
             System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight() + " in " + (System.currentTimeMillis() - start) + " ms.");
         }
 
-        //Clear canvas
-        gc.clearRect(0, 0, video_canvas.getWidth(), video_canvas.getHeight());
+        //Draw checkerboard pattern
+        final int BOX_SIZE = 25;
+        boolean alternate;
+        for (int y = 0; y < video_canvas.getHeight(); y += BOX_SIZE){
+            alternate = y % 2 == 0;
+            for (int x = 0; x < video_canvas.getWidth(); x += BOX_SIZE){
+                gc.setFill(alternate ? Color.LIGHTGRAY : Color.DARKGRAY);
+                gc.fillRect(x, y, BOX_SIZE, BOX_SIZE);
+                alternate = !alternate;
+            }
+        }
+
+        gc.save();
+        gc.translate((video_canvas.getWidth() - scaledImage.getWidth()) / 2, (video_canvas.getHeight() - scaledImage.getHeight()) / 2);
 
         //Draw image
         gc.drawImage(scaledImage, 0, 0);
@@ -166,6 +178,31 @@ public class MainLayout {
             gc.restore();
         }
 
+        if (debug) {
+            if (contentFinder instanceof LineContentFinder) {
+                //Scale to fit canvas
+                gc.save();
+                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
+
+                ((LineContentFinder) contentFinder).drawDebug(gc, overlay);
+
+                //Restore scaling
+                gc.restore();
+            }
+
+            if (contentFinder instanceof Debuggable){
+                //Scale to fit canvas
+                gc.save();
+                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
+
+                ((Debuggable) contentFinder).drawDebug(gc);
+
+                //Restore scaling
+                gc.restore();
+            }
+        }
+        gc.restore();
+
         content_size_paneController.setMaxContentSize((int) image.getWidth(), (int) image.getHeight());
         content_size_paneController.setContentSize((int) contentBounds.getWidth(), (int) contentBounds.getHeight());
         content_size_paneController.setMargins(
@@ -191,29 +228,6 @@ public class MainLayout {
                 (int) (image.getHeight() - (videoBoundary.getY() + videoBoundary.getHeight()))
         );
 
-        if (debug) {
-            if (contentFinder instanceof LineContentFinder) {
-                //Scale to fit canvas
-                gc.save();
-                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
-
-                ((LineContentFinder) contentFinder).drawDebug(gc, overlay);
-
-                //Restore scaling
-                gc.restore();
-            }
-
-            if (contentFinder instanceof Debuggable){
-                //Scale to fit canvas
-                gc.save();
-                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
-
-                ((Debuggable) contentFinder).drawDebug(gc);
-
-                //Restore scaling
-                gc.restore();
-            }
-        }
     }
 
     private void setIfLarger(final Rectangle a, final Rectangle b) {

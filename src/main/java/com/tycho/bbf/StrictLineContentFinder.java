@@ -53,6 +53,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
             int start = 0;
             boolean started = false;
             int xSkip = MAX_X_SKIP;
+            boolean hit = false;
             for (int x = 0; x < WIDTH - 1; x += xSkip){
                 if (started){
                     final Line line = new Line(start, y, x, y);
@@ -67,6 +68,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                         debug_lines.add(line);
                         lines++;
                         started = false;
+                        hit = true;
                         break;
                     }
                 }
@@ -88,19 +90,32 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                     System.out.println("Hit TOP threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
                     lines++;
+                    hit = true;
                 }
+            }
+            if (!hit){
+                for (int i = 0; i < lines; ++i){
+                    debug_lines.remove(debug_lines.size() - 1);
+                }
+                lines = 0;
             }
             if (lines >= REQUIRED_CONSECUTIVE) break;
         }
+        if (lines < REQUIRED_CONSECUTIVE){
+            for (int i = 0; i < lines; ++i){
+                debug_lines.remove(debug_lines.size() - 1);
+            }
+        }
 
-       /* ySkip = MAX_Y_SKIP;
+       ySkip = MAX_Y_SKIP;
 
         //Search from bottom to top
+        lines = 0;
         for (int y = HEIGHT - 1; y > ySkip; y -= ySkip){
             int start = 0;
             boolean started = false;
-            boolean hit = false;
             int xSkip = MAX_X_SKIP;
+            boolean hit = false;
             for (int x = 0; x < WIDTH - 1; x += xSkip){
                 if (started){
                     final Line line = new Line(start, y, x, y);
@@ -113,7 +128,9 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                         }
                         System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
+                        lines++;
                         hit = true;
+                        started = false;
                         break;
                     }
                 }
@@ -129,25 +146,32 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                     }
                 }
             }
-            if (hit) break;
             if (started){
                 final Line line = new Line(start, y, WIDTH - 1, y);
                 if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit BOTTOM threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
-                    break;
+                    lines++;
                 }
             }
+            if (!hit){
+                for (int i = 0; i < lines; ++i){
+                    debug_lines.remove(debug_lines.size() - 1);
+                }
+                lines = 0;
+            }
+            if (lines >= REQUIRED_CONSECUTIVE) break;
         }
 
         int xSkip = MAX_Y_SKIP;
 
         //Search from left to right
+        lines = 0;
         for (int x = 0; x < WIDTH - xSkip; x += xSkip){
             int start = 0;
             boolean started = false;
-            boolean hit = false;
             ySkip = MAX_X_SKIP;
+            boolean hit = false;
             for (int y = 0; y < HEIGHT - 1; y += ySkip){
                 if (started){
                     final Line line = new Line(x, start, x, y);
@@ -160,7 +184,9 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                         }
                         System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
+                        lines++;
                         hit = true;
+                        started = false;
                         break;
                     }
                 }
@@ -176,25 +202,32 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                     }
                 }
             }
-            if (hit) break;
             if (started){
                 final Line line = new Line(x, start, x, HEIGHT - 1);
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit LEFT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
-                    break;
+                    lines++;
                 }
             }
+            if (!hit){
+                for (int i = 0; i < lines; ++i){
+                    debug_lines.remove(debug_lines.size() - 1);
+                }
+                lines = 0;
+            }
+            if (lines >= REQUIRED_CONSECUTIVE) break;
         }
 
         xSkip = MAX_Y_SKIP;
 
         //Search from right to left
+        lines = 0;
         for (int x = WIDTH - 1; x > xSkip; x -= xSkip){
             int start = 0;
             boolean started = false;
-            boolean hit = false;
             ySkip = MAX_X_SKIP;
+            boolean hit = false;
             for (int y = 0; y < HEIGHT - 1; y += ySkip){
                 if (started){
                     final Line line = new Line(x, start, x, y);
@@ -207,7 +240,9 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                         }
                         System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
+                        lines++;
                         hit = true;
+                        started = false;
                         break;
                     }
                 }
@@ -223,16 +258,22 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                     }
                 }
             }
-            if (hit) break;
+            if (!hit){
+                for (int i = 0; i < lines; ++i){
+                    debug_lines.remove(debug_lines.size() - 1);
+                }
+                lines = 0;
+            }
             if (started){
                 final Line line = new Line(x, start, x, HEIGHT - 1);
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit RIGHT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
-                    break;
+                    lines++;
                 }
             }
-        }*/
+            if (lines >= REQUIRED_CONSECUTIVE) break;
+        }
 
         if (debug_lines.size() < 3){
             return new Rectangle();
@@ -292,7 +333,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
         final boolean drawLines = true;
         if (drawLines){
             for (Line line : debug_lines){
-                System.out.println("Line: " + line);
+                //System.out.println("Line: " + line);
                 gc.setStroke( Color.RED);
                 gc.strokeLine(line.x1 + 0.5, line.y1 + 0.5, line.x2 + 0.5, line.y2 + 0.5);
             }

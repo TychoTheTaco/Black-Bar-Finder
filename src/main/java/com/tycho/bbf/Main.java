@@ -2,10 +2,12 @@ package com.tycho.bbf;
 
 import com.tycho.bbf.layout.MainLayout;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
@@ -35,10 +37,9 @@ public class Main extends Application {
         final File file = new File("src/main/resources/blessings.mp4");
         //final File file = new File("src/main/resources/la_vibes.mp4");
         //final File file = new File("src/main/resources/limitless.mp4");
+        //final File file = new File("src/main/resources/small.jpg");
         //final File file = new File("src/main/resources/subtitle3.png");
         final FrameExtractor frameExtractor = new FrameExtractor(file);
-        //frameNumber = 7420 - 1;
-        //grabber.setVideoFrameNumber(frameNumber);
 
         final MainLayout mainLayout = loader.getController();
         mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
@@ -79,25 +80,25 @@ public class Main extends Application {
 
                 case "P":
                     running = !running;
-                    /*if (running){
+                    if (running){
                         new Thread(() -> {
+                            Frame previousFrame = null;
                             while (running){
+                                final long start = System.currentTimeMillis();
+
                                 //Get the next frame from the source video
-                                final Frame frame = getFrame(++frameNumber);
-                                if (frame == previousFrame){
-                                    --frameNumber;
-                                    running = false;
-                                    break;
+                                frameExtractor.nextFrame();
+                                if (previousFrame == frameExtractor.getFrame()){
+                                    return;
                                 }
-                                this.frame = frame;
 
                                 //Convert frame to image
-                                final Image image = new JavaFXFrameConverter().convert(frame);
+                                final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
 
                                 //Update UI
                                 Platform.runLater(() -> {
                                     mainLayout.setFrame(image);
-                                    mainLayout.setFrameCount(frameNumber + 1);
+                                    mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
 
                                     synchronized (LOCK){
                                         LOCK.notifyAll();
@@ -108,15 +109,21 @@ public class Main extends Application {
                                     synchronized (LOCK){
                                         LOCK.wait();
                                     }
+
+                                    //Maintain frame rate
+                                    Thread.sleep((long) Math.max(0, ((1000 / frameExtractor.getFrameRate()) - (2 * (System.currentTimeMillis() - start)))));
                                 }catch (InterruptedException e){
                                     e.printStackTrace();
                                 }
+
+                                previousFrame = frameExtractor.getFrame();
                             }
                         }).start();
-                    }*/
+                    }
                     return;
             }
 
+            //Process frame
             final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
             mainLayout.setFrame(image);
             mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);

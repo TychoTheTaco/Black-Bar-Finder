@@ -37,16 +37,10 @@ public class LineContentFinder extends ContentFinder {
         final int HEIGHT = (int) frame.getHeight();
         debug_lines.clear();
 
+        final PixelReader pixelReader = frame.getPixelReader();
         image = frame;
 
-        int top = 0;
-        int bottom = HEIGHT - 1;
-        int left = 0;
-        int right = WIDTH - 1;
-
         int ySkip = MAX_Y_SKIP;
-
-        final PixelReader pixelReader = frame.getPixelReader();
 
         System.out.println("----------- Find Content -----------");
 
@@ -68,7 +62,6 @@ public class LineContentFinder extends ContentFinder {
                         }
                         System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-                        top = y;
                         hit = true;
                         break;
                     }
@@ -91,7 +84,6 @@ public class LineContentFinder extends ContentFinder {
                 if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit TOP threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
-                    top = y;
                     break;
                 }
             }
@@ -117,7 +109,6 @@ public class LineContentFinder extends ContentFinder {
                         }
                         System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-                        bottom = y;
                         hit = true;
                         break;
                     }
@@ -140,7 +131,6 @@ public class LineContentFinder extends ContentFinder {
                 if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit BOTTOM threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
-                    bottom = y;
                     break;
                 }
             }
@@ -166,7 +156,6 @@ public class LineContentFinder extends ContentFinder {
                         }
                         System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-                        left = x;
                         hit = true;
                         break;
                     }
@@ -189,7 +178,6 @@ public class LineContentFinder extends ContentFinder {
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit LEFT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
-                    left = x;
                     break;
                 }
             }
@@ -215,7 +203,6 @@ public class LineContentFinder extends ContentFinder {
                         }
                         System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
-                        right = x;
                         hit = true;
                         break;
                     }
@@ -238,7 +225,6 @@ public class LineContentFinder extends ContentFinder {
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
                     System.out.println("Hit RIGHT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
-                    right = x;
                     break;
                 }
             }

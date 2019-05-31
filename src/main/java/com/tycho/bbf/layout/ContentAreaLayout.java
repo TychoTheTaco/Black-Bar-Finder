@@ -40,18 +40,15 @@ public class ContentAreaLayout {
 
     @FXML
     private void initialize() {
+        border_pane.setMinWidth(background_canvas.getWidth());
+        border_pane.setMaxWidth(background_canvas.getWidth());
+        border_pane.setPrefWidth(background_canvas.getWidth());
         background_canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
             border_pane.setMinWidth((double) newValue);
             border_pane.setMaxWidth((double) newValue);
             border_pane.setPrefWidth((double) newValue);
             draw();
         });
-        border_pane.setMinWidth(background_canvas.getWidth());
-        border_pane.setMaxWidth(background_canvas.getWidth());
-        border_pane.setPrefWidth(background_canvas.getWidth());
-        border_pane.setMinHeight(background_canvas.getHeight());
-        border_pane.setMaxHeight(background_canvas.getHeight());
-        border_pane.setPrefHeight(background_canvas.getHeight());
         background_canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
             border_pane.setMinHeight((double) newValue);
             border_pane.setMaxHeight((double) newValue);
