@@ -76,7 +76,7 @@ public class BlackBarFinder extends Application {
         //final File file = new File("src/main/resources/limitless.mp4");
         //final File file = new File("src/main/resources/small.jpg");
         //final File file = new File("src/main/resources/subtitle3.png");
-        //openFile(file);
+        openFile(file);
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode().getName()){

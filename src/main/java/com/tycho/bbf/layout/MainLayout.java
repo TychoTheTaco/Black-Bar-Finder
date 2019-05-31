@@ -284,6 +284,7 @@ public class MainLayout {
         this.contentFinder = contentFinder;
         this.content_finder_label.setText("Algorithm: " + contentFinder.getClass().getSimpleName());
 
+        properties.getChildren().clear();
         for (ContentFinder.Property property : contentFinder.getProperties().values()){
             try {
                 final FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/property_layout.fxml"));

@@ -30,8 +30,8 @@ public class DefaultContentFinder extends ContentFinder{
         final int MAX_Y_SKIP = ((Number) getProperties().get("max_y_skip").getValue()).intValue();
         final float THRESHOLD = ((Number) getProperties().get("threshold").getValue()).floatValue();
 
-        int minX = WIDTH;
-        int minY = HEIGHT;
+        int minX = WIDTH - 1;
+        int minY = HEIGHT - 1;
         Color initialColor = pixelReader.getColor(0, 0);
         int xSkip = MAX_X_SKIP;
         int ySkip = MAX_Y_SKIP;
