@@ -5,32 +5,69 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
 
-public class Main extends Application {
+public class BlackBarFinder extends Application {
 
+    //Available content finder algorithms
     private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder(), new StrictLineContentFinder()};
     private int contentFinderIndex = 0;
 
+    //True if the auto-player is running
     private boolean running = false;
 
     private static final Object LOCK = new Object();
 
+    private MainLayout mainLayout;
+
+    private FrameExtractor frameExtractor;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Black Bar Finder");
-        primaryStage.setResizable(false);
+        //Setup menu bar
+        final MenuBar menuBar = new MenuBar();
+        final Menu fileMenu = new Menu("File");
+        final MenuItem openMenuItem = new MenuItem("Open");
+        openMenuItem.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            final File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null && !openFile(file)){
+                final Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open file!");
+                alert.setContentText("Failed to open the file '"  + file.getAbsolutePath() + "'.");
+                alert.show();
+            }
+        });
+        fileMenu.getItems().add(openMenuItem);
+        menuBar.getMenus().add(fileMenu);
 
-        //Load main UI
+        //Setup UI
+        final BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+
+        //Load main layout
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/main_layout.fxml"));
-        final Scene scene = new Scene(loader.load());
+        borderPane.setCenter(loader.load());
+        mainLayout = loader.getController();
+        mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
+
+        //Setup scene and stage
+        final Scene scene = new Scene(borderPane);
         scene.getStylesheets().add(getClass().getResource("/styles/default.css").toExternalForm());
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Black Bar Finder");
+        primaryStage.setResizable(false);
         primaryStage.sizeToScene(); // Bug workaround
         primaryStage.show();
 
@@ -39,10 +76,7 @@ public class Main extends Application {
         //final File file = new File("src/main/resources/limitless.mp4");
         //final File file = new File("src/main/resources/small.jpg");
         //final File file = new File("src/main/resources/subtitle3.png");
-        final FrameExtractor frameExtractor = new FrameExtractor(file);
-
-        final MainLayout mainLayout = loader.getController();
-        mainLayout.setContentFinder(contentFinders[contentFinderIndex]);
+        openFile(file);
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode().getName()){
@@ -128,10 +162,26 @@ public class Main extends Application {
             mainLayout.setFrame(image);
             mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
         });
+    }
+
+    private boolean openFile(final File file){
+        if (file == null) return false;
+
+        this.frameExtractor = new FrameExtractor(file);
+
+        try {
+            frameExtractor.start();
+        }catch (FrameGrabber.Exception e){
+            e.printStackTrace();
+            return false;
+        }
 
         //Start on first frame
-        //frame = getFrame(++frameNumber);
-        //mainLayout.setFrame(new JavaFXFrameConverter().convert(frame));
-        //mainLayout.setFrameCount(frameNumber);
+        frameExtractor.nextFrame();
+        mainLayout.reset();
+        mainLayout.setFrame(new JavaFXFrameConverter().convert(frameExtractor.getFrame()));
+        mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
+
+        return true;
     }
 }

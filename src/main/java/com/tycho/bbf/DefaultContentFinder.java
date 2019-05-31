@@ -11,8 +11,8 @@ import static com.tycho.bbf.Utils.almostEqual;
 public class DefaultContentFinder extends ContentFinder{
 
     //Decrease for higher accuracy, Increase for more speed
-    private static final int MAX_X_SKIP = 8;
-    private static final int MAX_Y_SKIP = 8;
+    private static final int MAX_X_SKIP = 4;
+    private static final int MAX_Y_SKIP = 4;
 
     //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
     private static final float THRESHOLD = 0.02f;

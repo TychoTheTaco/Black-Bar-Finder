@@ -7,86 +7,67 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<BorderPane xmlns="http://javafx.com/javafx"
+<GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.tycho.bbf.layout.MainLayout">
 
-    <top>
-        <MenuBar>
-            <Menu text="File">
-                <MenuItem text="Open" onAction="#onOpenClicked"/>
-            </Menu>
-            <Menu text="Help">
-                <MenuItem text="About"/>
-            </Menu>
-        </MenuBar>
-    </top>
+    <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1280" height="720"/>
 
-    <center>
-        <GridPane>
-            <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" width="1920" height="1080"/>
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" hgap="15">
+        <padding>
+            <Insets left="5" right="5"/>
+        </padding>
+        <Label fx:id="cursor_position_label" text="Position: (x, y)" GridPane.columnIndex="0" GridPane.rowIndex="0"
+               GridPane.hgrow="ALWAYS"/>
+        <Label text="[E] Toggle Overlay" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Label text="[Q] Toggle Debug" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Label text="[R] Reset" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <Label text="[S] Previous Frame" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
+        <Label text="[D] Next Frame" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
+    </GridPane>
 
-            <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" hgap="15">
-                <padding>
-                    <Insets left="5" right="5"/>
-                </padding>
-                <Label fx:id="cursor_position_label" text="Position: (x, y)" GridPane.columnIndex="0" GridPane.rowIndex="0"
-                       GridPane.hgrow="ALWAYS"/>
-                <Label text="[E] Toggle Overlay" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                <Label text="[Q] Toggle Debug" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                <Label text="[R] Reset" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
-                <Label text="[S] Previous Frame" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
-                <Label text="[D] Next Frame" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
-            </GridPane>
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+        <GridPane.margin>
+            <Insets left="5"/>
+        </GridPane.margin>
+        <padding>
+            <Insets right="5"/>
+        </padding>
+        <Label fx:id="frame_count_label" text="Frame: ?" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="processing_time_label" text="Processed in ? ms." GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
-                <GridPane.margin>
-                    <Insets left="5"/>
-                </GridPane.margin>
-                <padding>
-                    <Insets right="5"/>
-                </padding>
-                <Label fx:id="frame_count_label" text="Frame: ?" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="processing_time_label" text="Processed in ? ms." GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Separator GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <GridPane.margin>
+                <Insets top="5" bottom="5"/>
+            </GridPane.margin>
+        </Separator>
 
-                <Separator GridPane.columnIndex="0" GridPane.rowIndex="2">
-                    <GridPane.margin>
-                        <Insets top="5" bottom="5"/>
-                    </GridPane.margin>
-                </Separator>
+        <Label text="Content Size" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER"/>
+        <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
 
-                <Label text="Content Size" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER"/>
-                <fx:include fx:id="content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER"/>
+        <Label text="Largest Content Size" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.halignment="CENTER">
+            <GridPane.margin>
+                <Insets top="10"/>
+            </GridPane.margin>
+        </Label>
+        <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
 
-                <Label text="Largest Content Size" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.halignment="CENTER">
-                    <GridPane.margin>
-                        <Insets top="10"/>
-                    </GridPane.margin>
-                </Label>
-                <fx:include fx:id="largest_content_size_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.halignment="CENTER"/>
+        <Label text="Video Boundary" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.halignment="CENTER">
+            <GridPane.margin>
+                <Insets top="10"/>
+            </GridPane.margin>
+        </Label>
+        <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
 
-                <Label text="Video Boundary" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.halignment="CENTER">
-                    <GridPane.margin>
-                        <Insets top="10"/>
-                    </GridPane.margin>
-                </Label>
-                <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="8" GridPane.halignment="CENTER"/>
+        <Separator GridPane.columnIndex="0" GridPane.rowIndex="9">
+            <GridPane.margin>
+                <Insets top="10" bottom="5"/>
+            </GridPane.margin>
+        </Separator>
 
-                <Separator GridPane.columnIndex="0" GridPane.rowIndex="9">
-                    <GridPane.margin>
-                        <Insets top="10" bottom="5"/>
-                    </GridPane.margin>
-                </Separator>
-
-                <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10" prefWidth="250"/>
-                <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
-                          disable="true"/>
-                <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>
-            </GridPane>
-        </GridPane>
-    </center>
-
-</BorderPane>
+        <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10" prefWidth="250"/>
+        <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
+                  disable="true"/>
+        <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>
+    </GridPane>
+</GridPane>

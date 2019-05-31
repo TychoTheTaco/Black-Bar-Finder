@@ -1,5 +1,6 @@
 package com.tycho.bbf.layout;
 
+import com.sun.jndi.toolkit.url.Uri;
 import com.tycho.bbf.*;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -10,6 +11,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 public class MainLayout {
 
@@ -64,18 +71,26 @@ public class MainLayout {
     private Rectangle videoBoundary = new Rectangle();
 
     private Image image;
+    private Image scaledImage;
 
     @FXML
     private void initialize() {
         gc = video_canvas.getGraphicsContext2D();
 
         //Set up video canvas
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, video_canvas.getWidth(), video_canvas.getHeight());
+        Utils.drawCheckerboard(video_canvas, 32);
         video_canvas.setOnMouseMoved(event -> {
-            final int x = (int) (image == null ? event.getX() : ((event.getX() / video_canvas.getWidth()) * image.getWidth()));
-            final int y = (int) (image == null ? event.getY() : ((event.getY() / video_canvas.getHeight()) * image.getHeight()));
-            cursor_position_label.setText("Position: (" + x + ", " + y + ")");
+            if (scaledImage != null) {
+                int x = (int) (event.getX() - ((video_canvas.getWidth() - scaledImage.getWidth()) / 2));
+                int y = (int) (event.getY() - ((video_canvas.getHeight() - scaledImage.getHeight()) / 2));
+                x = (int) ((x / scaledImage.getWidth()) * image.getWidth());
+                y = (int) ((y / scaledImage.getHeight()) * image.getHeight());
+                if (x < 0 || x > image.getWidth() || y < 0 || y > image.getHeight()){
+                    cursor_position_label.setText("");
+                }else{
+                    cursor_position_label.setText("Position: (" + x + ", " + y + ")");
+                }
+            }
         });
 
         //Set up
@@ -101,24 +116,15 @@ public class MainLayout {
         //resizeCanvas(image);
 
         //Scale image to fit canvas
-        Image scaledImage = image;
+        scaledImage = image;
         if (image.getWidth() != video_canvas.getWidth() || image.getHeight() != video_canvas.getHeight()) {
             final long start = System.currentTimeMillis();
             scaledImage = Utils.scale(image, (int) video_canvas.getWidth(), (int) video_canvas.getHeight(), true);
-            System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight() + " in " + (System.currentTimeMillis() - start) + " ms.");
+            //System.out.println("Resized to " + image.getWidth() + " by " + image.getHeight() + " in " + (System.currentTimeMillis() - start) + " ms.");
         }
 
         //Draw checkerboard pattern
-        final int BOX_SIZE = 25;
-        boolean alternate;
-        for (int y = 0; y < video_canvas.getHeight(); y += BOX_SIZE){
-            alternate = y % 2 == 0;
-            for (int x = 0; x < video_canvas.getWidth(); x += BOX_SIZE){
-                gc.setFill(alternate ? Color.LIGHTGRAY : Color.DARKGRAY);
-                gc.fillRect(x, y, BOX_SIZE, BOX_SIZE);
-                alternate = !alternate;
-            }
-        }
+        Utils.drawCheckerboard(video_canvas, 32);
 
         gc.save();
         gc.translate((video_canvas.getWidth() - scaledImage.getWidth()) / 2, (video_canvas.getHeight() - scaledImage.getHeight()) / 2);
@@ -139,6 +145,7 @@ public class MainLayout {
 
             //Calculate video boundary
             if (videoBoundary == null) videoBoundary = new Rectangle(maxContentBounds.getX(), maxContentBounds.getY(), maxContentBounds.getWidth(), maxContentBounds.getHeight());
+            final Rectangle before = new Rectangle(videoBoundary.getX(), videoBoundary.getY(), videoBoundary.getWidth(), videoBoundary.getHeight());
             setIfLarger(maxContentBounds, videoBoundary);
             if (forceSymmetrical && (videoBoundary.getWidth() + videoBoundary.getHeight() > 0)) {
                 final double left = videoBoundary.getX();
@@ -151,6 +158,10 @@ public class MainLayout {
                 videoBoundary.setWidth(videoBoundary.getWidth() + xDif);
                 videoBoundary.setY(Math.min(top, bottom));
                 videoBoundary.setHeight(videoBoundary.getHeight() + yDif);
+            }
+            final Rectangle after = new Rectangle(videoBoundary.getX(), videoBoundary.getY(), videoBoundary.getWidth(), videoBoundary.getHeight());
+            if (before.getX() != after.getX() || before.getY() != after.getY() || before.getWidth() != after.getWidth() || before.getHeight() != after.getHeight()) {
+                System.out.println("Border changed!");
             }
         }
 
@@ -179,18 +190,7 @@ public class MainLayout {
         }
 
         if (debug) {
-            if (contentFinder instanceof LineContentFinder) {
-                //Scale to fit canvas
-                gc.save();
-                gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
-
-                ((LineContentFinder) contentFinder).drawDebug(gc, overlay);
-
-                //Restore scaling
-                gc.restore();
-            }
-
-            if (contentFinder instanceof Debuggable){
+            if (contentFinder instanceof Debuggable) {
                 //Scale to fit canvas
                 gc.save();
                 gc.scale(scaledImage.getWidth() / image.getWidth(), scaledImage.getHeight() / image.getHeight());
@@ -236,11 +236,6 @@ public class MainLayout {
         if (a.getY() < b.getY() || (b.getWidth() + b.getHeight() == 0)) b.setY(a.getY());
         if (a.getX() + a.getWidth() > b.getX() + b.getWidth() || (b.getWidth() + b.getHeight() == 0)) b.setWidth(a.getX() + a.getWidth() - b.getX());
         if (a.getY() + a.getHeight() > b.getY() + b.getHeight() || (b.getWidth() + b.getHeight() == 0)) b.setHeight(a.getY() + a.getHeight() - b.getY());
-    }
-
-    @FXML
-    private void onOpenClicked(){
-        System.out.println("Open clicked!");
     }
 
     public boolean getOverlay() {

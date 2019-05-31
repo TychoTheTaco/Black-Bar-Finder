@@ -45,7 +45,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
 
         final PixelReader pixelReader = frame.getPixelReader();
 
-        System.out.println("----------- Find Content -----------");
+        //System.out.println("----------- Find Content -----------");
 
         //Search from top to bottom
         int lines = 0;
@@ -64,7 +64,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                             xSkip = 1;
                             continue;
                         }
-                        System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
+                        //System.out.println("Hit TOP threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
                         lines++;
                         started = false;
@@ -87,7 +87,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
             if (started){
                 final Line line = new Line(start, y, WIDTH - 1, y);
                 if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                    System.out.println("Hit TOP threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
+                    //System.out.println("Hit TOP threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
                     lines++;
                     hit = true;
@@ -126,7 +126,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                             xSkip = 1;
                             continue;
                         }
-                        System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
+                        //System.out.println("Hit BOTTOM threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
                         lines++;
                         hit = true;
@@ -149,7 +149,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
             if (started){
                 final Line line = new Line(start, y, WIDTH - 1, y);
                 if (line.length() >= WIDTH * LINE_LENGTH_THRESHOLD){
-                    System.out.println("Hit BOTTOM threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
+                    //System.out.println("Hit BOTTOM threshold at "  + (WIDTH - 1) + ", " + y + " with length " + line.length());
                     debug_lines.add(line);
                     lines++;
                 }
@@ -182,7 +182,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                             ySkip = 1;
                             continue;
                         }
-                        System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
+                       // System.out.println("Hit LEFT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
                         lines++;
                         hit = true;
@@ -205,7 +205,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
             if (started){
                 final Line line = new Line(x, start, x, HEIGHT - 1);
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
-                    System.out.println("Hit LEFT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
+                    //System.out.println("Hit LEFT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
                     lines++;
                 }
@@ -238,7 +238,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
                             ySkip = 1;
                             continue;
                         }
-                        System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
+                        //System.out.println("Hit RIGHT threshold at "  + x + ", " + y + " with length " + line.length());
                         debug_lines.add(line);
                         lines++;
                         hit = true;
@@ -267,7 +267,7 @@ public class StrictLineContentFinder extends ContentFinder implements Debuggable
             if (started){
                 final Line line = new Line(x, start, x, HEIGHT - 1);
                 if (line.length() >= HEIGHT * LINE_LENGTH_THRESHOLD){
-                    System.out.println("Hit RIGHT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
+                    //System.out.println("Hit RIGHT threshold at "  + x + ", " + (HEIGHT - 1) + " with length " + line.length());
                     debug_lines.add(line);
                     lines++;
                 }

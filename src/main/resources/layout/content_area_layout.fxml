@@ -10,7 +10,7 @@
            fx:controller="com.tycho.bbf.layout.ContentAreaLayout">
 
     <!--width="208" height="117"-->
-    <Canvas fx:id="background_canvas" width="160" height="90"/>
+    <Canvas fx:id="background_canvas" width="176" height="99"/>
 
     <BorderPane fx:id="border_pane">
         <padding>

@@ -1,5 +1,6 @@
 package com.tycho.bbf.layout;
 
+import com.tycho.bbf.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -55,6 +56,8 @@ public class ContentAreaLayout {
             border_pane.setPrefHeight((double) newValue);
             draw();
         });
+
+        Utils.drawCheckerboard(background_canvas, 16);
     }
 
     public void setCanvasSize(final double width, final double height){

@@ -20,14 +20,12 @@ public class FrameExtractor {
     public FrameExtractor(final File file){
         this.file = file;
         this.frameGrabber = new FFmpegFrameGrabber(file);
+    }
 
-        try {
-            this.frameGrabber.start();
-            //frameNumber = 7420 - 1;
-            //frameGrabber.setVideoFrameNumber(frameNumber);
-        }catch (FrameGrabber.Exception e){
-            e.printStackTrace();
-        }
+    public void start() throws FrameGrabber.Exception{
+        this.frameGrabber.start();
+        //frameNumber = 7420 - 1;
+        //frameGrabber.setVideoFrameNumber(frameNumber);
     }
 
     public synchronized Frame nextFrame(){
