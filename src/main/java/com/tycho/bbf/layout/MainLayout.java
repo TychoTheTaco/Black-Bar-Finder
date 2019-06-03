@@ -123,27 +123,8 @@ public class MainLayout {
         debug_checkbox.setSelected(debug);
     }
 
-    private void resizeCanvas(final Image image) {
-        System.out.println("--- Resize ---");
-        System.out.println("Image size: " + image.getWidth() + " by " +  image.getHeight());
-        final double ratio = image.getWidth() / image.getHeight();
-        System.out.println("Ratio: " + ratio);
-        final int width = (int) (90 * ratio);
-        final int height = (int) (160 * (1 / ratio));
-        System.out.println("Calculated dimensions: " + width + " by " + height);
-        System.out.println("New dimensions: " + Math.min(width, 160) + " by " + Math.min(height, 90));
-        //content_size_paneController.setCanvasSize(Math.min(width, 160), Math.min(height, 90));
-
-        /*int w = (int) (video_canvas.getWidth() / 8);
-        int h = (int) ((image.getHeight() / image.getWidth()) * w);
-        content_size_paneController.setCanvasSize(w, h);
-        largest_content_size_paneController.setCanvasSize(w, h);
-        estimated_video_area_paneController.setCanvasSize(w, h);*/
-    }
-
     public void setFrame(final Image image) {
         this.image = image;
-        resizeCanvas(image);
 
         if (image == null) return;
 
@@ -318,6 +299,8 @@ public class MainLayout {
                 e.printStackTrace();
             }
         }
+
+        processCurrentFrame();
     }
 
     public void reset() {
@@ -415,6 +398,7 @@ public class MainLayout {
     }
 
     private void processCurrentFrame(){
+        if (frameExtractor == null || frameExtractor.getFrame() == null) return;
         final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
         setFrame(image);
         setFrameCount(frameExtractor.getFrameNumber() + 1);

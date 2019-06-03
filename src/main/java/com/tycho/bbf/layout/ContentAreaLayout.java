@@ -58,11 +58,6 @@ public class ContentAreaLayout {
         });
 
         Utils.drawCheckerboard(background_canvas, 16);
-
-        top.getStyleClass().add("outline");
-        left.getStyleClass().add("outline");
-        right.getStyleClass().add("outline");
-        bottom.getStyleClass().add("outline");
     }
 
     public void setCanvasSize(final double width, final double height) {
@@ -103,8 +98,8 @@ public class ContentAreaLayout {
 
         //Resize
         final double ratio = (double) maxContentWidth / maxContentHeight;
-        final double w = Math.min((int) (90 * ratio), 160);
-        final double h = Math.min((int) (160 * (1 / ratio)), 90);
+        final double w = Math.min((int) (background_canvas.getHeight() * ratio), background_canvas.getWidth());
+        final double h = Math.min((int) (background_canvas.getWidth() * (1 / ratio)), background_canvas.getHeight());
         border_pane.setPrefSize(w, h);
         border_pane.setMinSize(w, h);
         border_pane.setMaxSize(w, h);
@@ -112,8 +107,8 @@ public class ContentAreaLayout {
         Utils.drawCheckerboard(background_canvas, 16);
 
         gc.save();
-        gc.translate((160 - w) / 2, 0);
-        gc.scale(w / 160, h / 90);
+        gc.translate((background_canvas.getWidth() - w) / 2, (background_canvas.getHeight() - h) / 2);
+        gc.scale(w / background_canvas.getWidth(), h / background_canvas.getHeight());
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, background_canvas.getWidth(), background_canvas.getHeight());
