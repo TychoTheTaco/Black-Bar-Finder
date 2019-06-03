@@ -14,17 +14,17 @@ public abstract class ContentFinder {
 
     public abstract class Property<T>{
 
-        private final String tag;
+        private final String name;
 
         private T value;
 
-        public Property(String tag, T value) {
-            this.tag = tag;
+        public Property(String name, T value) {
+            this.name = name;
             this.value = value;
         }
 
-        public String getTag() {
-            return tag;
+        public String getName() {
+            return name;
         }
 
         public T getValue() {

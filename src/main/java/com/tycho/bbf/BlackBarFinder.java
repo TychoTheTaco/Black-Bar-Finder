@@ -14,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
@@ -25,17 +24,12 @@ public class BlackBarFinder extends Application {
     private static final ContentFinder[] contentFinders = new ContentFinder[]{new DefaultContentFinder(), new LineContentFinder(), new StrictLineContentFinder()};
     private int contentFinderIndex = 0;
 
-    //True if the auto-player is running
-    private boolean running = false;
-
-    private static final Object LOCK = new Object();
-
     private MainLayout mainLayout;
-
-    private FrameExtractor frameExtractor;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        final BorderPane borderPane = new BorderPane();
+
         //Setup menu bar
         final MenuBar menuBar = new MenuBar();
         final Menu fileMenu = new Menu("File");
@@ -43,7 +37,7 @@ public class BlackBarFinder extends Application {
         openMenuItem.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             final File file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null && !openFile(file)){
+            if (file != null && !mainLayout.openFile(file)){
                 final Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open file!");
                 alert.setContentText("Failed to open the file '"  + file.getAbsolutePath() + "'.");
                 alert.show();
@@ -51,9 +45,6 @@ public class BlackBarFinder extends Application {
         });
         fileMenu.getItems().add(openMenuItem);
         menuBar.getMenus().add(fileMenu);
-
-        //Setup UI
-        final BorderPane borderPane = new BorderPane();
         borderPane.setTop(menuBar);
 
         //Load main layout
@@ -76,16 +67,16 @@ public class BlackBarFinder extends Application {
         //final File file = new File("src/main/resources/limitless.mp4");
         //final File file = new File("src/main/resources/small.jpg");
         //final File file = new File("src/main/resources/subtitle3.png");
-        openFile(file);
+        mainLayout.openFile(file);
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode().getName()){
                 case "D":
-                    frameExtractor.nextFrame();
+                    mainLayout.nextFrame();
                     break;
 
                 case "A":
-                    frameExtractor.previousFrame();
+                    mainLayout.previousFrame();
                     break;
 
                 case "E":
@@ -113,75 +104,9 @@ public class BlackBarFinder extends Application {
                     break;
 
                 case "P":
-                    running = !running;
-                    if (running){
-                        new Thread(() -> {
-                            Frame previousFrame = null;
-                            while (running){
-                                final long start = System.currentTimeMillis();
-
-                                //Get the next frame from the source video
-                                frameExtractor.nextFrame();
-                                if (previousFrame == frameExtractor.getFrame()){
-                                    return;
-                                }
-
-                                //Convert frame to image
-                                final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
-
-                                //Update UI
-                                Platform.runLater(() -> {
-                                    mainLayout.setFrame(image);
-                                    mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
-
-                                    synchronized (LOCK){
-                                        LOCK.notifyAll();
-                                    }
-                                });
-
-                                try {
-                                    synchronized (LOCK){
-                                        LOCK.wait();
-                                    }
-
-                                    //Maintain frame rate
-                                    Thread.sleep((long) Math.max(0, ((1000 / frameExtractor.getFrameRate()) - (2 * (System.currentTimeMillis() - start)))));
-                                }catch (InterruptedException e){
-                                    e.printStackTrace();
-                                }
-
-                                previousFrame = frameExtractor.getFrame();
-                            }
-                        }).start();
-                    }
+                    mainLayout.play();
                     return;
             }
-
-            //Process frame
-            final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
-            mainLayout.setFrame(image);
-            mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
         });
-    }
-
-    private boolean openFile(final File file){
-        if (file == null) return false;
-
-        this.frameExtractor = new FrameExtractor(file);
-
-        try {
-            frameExtractor.start();
-        }catch (FrameGrabber.Exception e){
-            e.printStackTrace();
-            return false;
-        }
-
-        //Start on first frame
-        frameExtractor.nextFrame();
-        mainLayout.reset();
-        mainLayout.setFrame(new JavaFXFrameConverter().convert(frameExtractor.getFrame()));
-        mainLayout.setFrameCount(frameExtractor.getFrameNumber() + 1);
-
-        return true;
     }
 }

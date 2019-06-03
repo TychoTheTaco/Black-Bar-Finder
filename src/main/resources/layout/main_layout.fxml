@@ -28,6 +28,8 @@
         <padding>
             <Insets left="10" right="10"/>
         </padding>
+
+        <!-- Frame / Processing details -->
         <Label fx:id="frame_count_label" text="Frame: ?" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <Label fx:id="processing_time_label" text="Processed in ? ms." GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
@@ -37,9 +39,20 @@
             </GridPane.margin>
         </Separator>
 
+        <!-- Frame / Processing details -->
+        <Label fx:id="source_file_label" text="Source: ?" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Label fx:id="source_size_label" text="Size: unknown." GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+
+        <Separator GridPane.columnIndex="0" GridPane.rowIndex="5">
+            <GridPane.margin>
+                <Insets top="5" bottom="5"/>
+            </GridPane.margin>
+        </Separator>
+
         <!-- Content size -->
-        <GridPane GridPane.columnIndex="0" GridPane.rowIndex="3" hgap="10">
+        <GridPane GridPane.columnIndex="0" GridPane.rowIndex="6" hgap="10">
             <columnConstraints>
+                <ColumnConstraints halignment="CENTER"/>
                 <ColumnConstraints halignment="CENTER"/>
             </columnConstraints>
 
@@ -53,24 +66,24 @@
             <fx:include fx:id="estimated_video_area_pane" source="content_area_layout.fxml" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
         </GridPane>
 
-        <Separator GridPane.columnIndex="0" GridPane.rowIndex="9">
+        <Separator GridPane.columnIndex="0" GridPane.rowIndex="7">
             <GridPane.margin>
                 <Insets top="10" bottom="5"/>
             </GridPane.margin>
         </Separator>
 
-        <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
-        <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="11"
-                  disable="true"/>
-        <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="12" disable="true"/>
+        <!-- Algorithm details -->
+        <Label fx:id="content_finder_label" text="Algorithm: ?" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+        <CheckBox fx:id="overlay_checkbox" text="Overlay" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+        <CheckBox fx:id="debug_checkbox" text="Debug" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
 
-        <Label text="Properties" GridPane.columnIndex="0" GridPane.rowIndex="14">
+        <Label text="Properties" GridPane.columnIndex="0" GridPane.rowIndex="11" underline="true">
             <GridPane.margin>
-                <Insets top="5" bottom="5"/>
+                <Insets top="15" bottom="5"/>
             </GridPane.margin>
         </Label>
 
-        <VBox fx:id="properties" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+        <VBox fx:id="properties" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
 
     </GridPane>
 </GridPane>

@@ -1,27 +1,27 @@
 package com.tycho.bbf.layout;
 
-import com.sun.jndi.toolkit.url.Uri;
-import com.tycho.bbf.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.tycho.bbf.ContentFinder;
+import com.tycho.bbf.Debuggable;
+import com.tycho.bbf.FrameExtractor;
+import com.tycho.bbf.Utils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.JavaFXFrameConverter;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 
 public class MainLayout {
 
@@ -30,6 +30,12 @@ public class MainLayout {
 
     @FXML
     private Label processing_time_label;
+
+    @FXML
+    private Label source_file_label;
+
+    @FXML
+    private Label source_size_label;
 
     @FXML
     public Canvas video_canvas;
@@ -69,6 +75,8 @@ public class MainLayout {
 
     private GraphicsContext gc;
 
+    private FrameExtractor frameExtractor;
+
     private ContentFinder contentFinder;
 
     private boolean overlay = true;
@@ -80,6 +88,8 @@ public class MainLayout {
 
     private Image image;
     private Image scaledImage;
+
+
 
     @FXML
     private void initialize() {
@@ -101,24 +111,16 @@ public class MainLayout {
             }
         });
 
-        //Set up
+        //Set content size controllers
         content_size_paneController.setColor(Color.RED);
         largest_content_size_paneController.setColor(Color.GREEN);
         estimated_video_area_paneController.setColor(Color.BLUE);
 
         //Set up flags
+        overlay_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> setOverlay(newValue));
         overlay_checkbox.setSelected(overlay);
+        debug_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> setDebug(newValue));
         debug_checkbox.setSelected(debug);
-
-       /* slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            slider_value.setText("Value: " + newValue);
-
-            if (contentFinder instanceof DefaultContentFinder){
-                contentFinder.getProperties().get("threshold").setValue(newValue.floatValue());
-            }
-
-            setFrame(image);
-        });*/
     }
 
     private void resizeCanvas(final Image image) {
@@ -133,6 +135,8 @@ public class MainLayout {
         this.image = image;
         //resizeCanvas(image);
 
+        if (image == null) return;
+
         //Scale image to fit canvas
         scaledImage = image;
         if (image.getWidth() != video_canvas.getWidth() || image.getHeight() != video_canvas.getHeight()) {
@@ -144,6 +148,7 @@ public class MainLayout {
         //Draw checkerboard pattern
         Utils.drawCheckerboard(video_canvas, 32);
 
+        //Translate canvas to center the image
         gc.save();
         gc.translate((video_canvas.getWidth() - scaledImage.getWidth()) / 2, (video_canvas.getHeight() - scaledImage.getHeight()) / 2);
 
@@ -292,7 +297,11 @@ public class MainLayout {
                 final PropertyLayout propertyLayout = loader.getController();
                 propertyLayout.setProperty((ContentFinder.RangedProperty) property);
                 propertyLayout.getSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
-                    property.setValue(newValue);
+                    if (property.getValue() instanceof Integer){
+                        property.setValue(newValue.intValue());
+                    }else{
+                        property.setValue(newValue);
+                    }
                     setFrame(image);
                 });
             }catch (IOException e){
@@ -304,5 +313,99 @@ public class MainLayout {
     public void reset() {
         this.maxContentBounds = new Rectangle();
         this.videoBoundary = new Rectangle();
+    }
+
+    public boolean openFile(final File file){
+        if (file == null) return false;
+
+        this.frameExtractor = new FrameExtractor(file);
+
+        try {
+            frameExtractor.start();
+        }catch (FrameGrabber.Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+        //Start on first frame
+        frameExtractor.nextFrame();
+        reset();
+        setFrame(new JavaFXFrameConverter().convert(frameExtractor.getFrame()));
+        setFrameCount(frameExtractor.getFrameNumber() + 1);
+
+        //Get file information
+        source_file_label.setText("Source: " + file.getAbsolutePath());
+        source_size_label.setText("Size: " + frameExtractor.getFrame().imageWidth + " x " + frameExtractor.getFrame().imageHeight);
+
+        return true;
+    }
+
+    public void nextFrame(){
+        frameExtractor.nextFrame();
+        processCurrentFrame();
+    }
+
+    public void previousFrame(){
+        frameExtractor.previousFrame();
+        processCurrentFrame();
+    }
+
+    //True if the auto-player is running
+    private boolean running = false;
+
+    private static final Object LOCK = new Object();
+
+    public void play(){
+        running = !running;
+        if (running){
+            new Thread(() -> {
+                Frame previousFrame = null;
+                while (running){
+                    final long start = System.currentTimeMillis();
+
+                    //Get the next frame from the source video
+                    frameExtractor.nextFrame();
+                    if (previousFrame == frameExtractor.getFrame()){
+                        return;
+                    }
+
+                    //Convert frame to image
+                    final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
+
+                    //Update UI
+                    Platform.runLater(() -> {
+                        setFrame(image);
+                        setFrameCount(frameExtractor.getFrameNumber() + 1);
+
+                        synchronized (LOCK){
+                            LOCK.notifyAll();
+                        }
+                    });
+
+                    try {
+                        synchronized (LOCK){
+                            LOCK.wait();
+                        }
+
+                        //Maintain frame rate
+                        Thread.sleep((long) Math.max(0, ((1000 / frameExtractor.getFrameRate()) - (2 * (System.currentTimeMillis() - start)))));
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    previousFrame = frameExtractor.getFrame();
+                }
+            }).start();
+        }
+    }
+
+    public void stop(){
+
+    }
+
+    private void processCurrentFrame(){
+        final Image image = new JavaFXFrameConverter().convert(frameExtractor.getFrame());
+        setFrame(image);
+        setFrameCount(frameExtractor.getFrameNumber() + 1);
     }
 }

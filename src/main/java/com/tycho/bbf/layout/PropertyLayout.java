@@ -1,17 +1,12 @@
 package com.tycho.bbf.layout;
 
 import com.tycho.bbf.ContentFinder;
-import com.tycho.bbf.Utils;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class PropertyLayout {
 
@@ -24,16 +19,35 @@ public class PropertyLayout {
     @FXML
     private Slider slider;
 
+    private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#0.0000");
+
     @FXML
     private void initialize() {
-        slider.valueProperty().addListener((observable, oldValue, newValue) -> value_label.setText(String.valueOf(newValue)));
+        NUMBER_FORMAT.setMinimumFractionDigits(4);
     }
 
     public void setProperty(final ContentFinder.RangedProperty property){
-        title.setText(property.getTag());
-        value_label.setText(String.valueOf(property.getValue()));
+        title.setText(property.getName());
+
+        //Set slider properties
         slider.setMin(property.getMin().doubleValue());
         slider.setMax(property.getMax().doubleValue());
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (property.getValue() instanceof Integer){
+                value_label.setText(String.valueOf(newValue.intValue()));
+            }else{
+                value_label.setText(NUMBER_FORMAT.format(newValue));
+            }
+        });
+        slider.setValue(property.getValue().doubleValue());
+
+        if (property.getValue() instanceof Integer){
+            slider.setMajorTickUnit(1);
+            slider.setMinorTickCount(0);
+            slider.setBlockIncrement(1.0);
+        }else{
+            slider.setBlockIncrement(0.01);
+        }
     }
 
     public Slider getSlider() {

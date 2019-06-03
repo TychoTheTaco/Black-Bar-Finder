@@ -11,11 +11,11 @@ public class DefaultContentFinder extends ContentFinder{
 
     public DefaultContentFinder(){
         //Decrease for higher accuracy, Increase for more speed
-        getProperties().put("max_x_skip", new RangedProperty("max_x_skip", 4, 1, 64));
-        getProperties().put("max_y_skip", new RangedProperty("max_y_skip", 4, 1, 64));
+        getProperties().put("max_x_skip", new RangedProperty("Max X skip", 4, 1, 64));
+        getProperties().put("max_y_skip", new RangedProperty("Max Y skip", 4, 1, 64));
 
         //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
-        getProperties().put("threshold", new RangedProperty("threshold", 0.02f, 0, 1));
+        getProperties().put("threshold", new RangedProperty("Color Threshold", 0.02f, 0, 1));
     }
 
     @Override
