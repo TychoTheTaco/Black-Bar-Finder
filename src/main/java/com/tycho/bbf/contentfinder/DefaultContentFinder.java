@@ -1,4 +1,4 @@
-package com.tycho.bbf;
+package com.tycho.bbf.contentfinder;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -11,11 +11,11 @@ public class DefaultContentFinder extends ContentFinder{
 
     public DefaultContentFinder(){
         //Decrease for higher accuracy, Increase for more speed
-        getProperties().put("max_x_skip", new RangedProperty("Max X skip", 4, 1, 64));
-        getProperties().put("max_y_skip", new RangedProperty("Max Y skip", 4, 1, 64));
+        addProperty("max_x_skip", new RangedProperty("Max X skip", 4, 1, 64));
+        addProperty("max_y_skip", new RangedProperty("Max Y skip", 4, 1, 64));
 
         //Maximum difference allowed between neighboring pixels before it is considered part of the content area.
-        getProperties().put("threshold", new RangedProperty("Color Threshold", 0.02f, 0, 1));
+        addProperty("threshold", new RangedProperty("Color Threshold", 0.02f, 0, 1));
     }
 
     @Override
@@ -99,6 +99,9 @@ public class DefaultContentFinder extends ContentFinder{
             }
         }
 
+        if (maxX - minY + 1 <= 0){
+            return new Rectangle();
+        }
         return new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
     }
 }

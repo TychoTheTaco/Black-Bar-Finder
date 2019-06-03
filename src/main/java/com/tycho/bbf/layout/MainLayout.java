@@ -1,7 +1,7 @@
 package com.tycho.bbf.layout;
 
-import com.tycho.bbf.ContentFinder;
-import com.tycho.bbf.Debuggable;
+import com.tycho.bbf.contentfinder.ContentFinder;
+import com.tycho.bbf.contentfinder.Debuggable;
 import com.tycho.bbf.FrameExtractor;
 import com.tycho.bbf.Utils;
 import javafx.application.Platform;
@@ -124,16 +124,26 @@ public class MainLayout {
     }
 
     private void resizeCanvas(final Image image) {
-        int w = (int) (video_canvas.getWidth() / 8);
+        System.out.println("--- Resize ---");
+        System.out.println("Image size: " + image.getWidth() + " by " +  image.getHeight());
+        final double ratio = image.getWidth() / image.getHeight();
+        System.out.println("Ratio: " + ratio);
+        final int width = (int) (90 * ratio);
+        final int height = (int) (160 * (1 / ratio));
+        System.out.println("Calculated dimensions: " + width + " by " + height);
+        System.out.println("New dimensions: " + Math.min(width, 160) + " by " + Math.min(height, 90));
+        //content_size_paneController.setCanvasSize(Math.min(width, 160), Math.min(height, 90));
+
+        /*int w = (int) (video_canvas.getWidth() / 8);
         int h = (int) ((image.getHeight() / image.getWidth()) * w);
         content_size_paneController.setCanvasSize(w, h);
         largest_content_size_paneController.setCanvasSize(w, h);
-        estimated_video_area_paneController.setCanvasSize(w, h);
+        estimated_video_area_paneController.setCanvasSize(w, h);*/
     }
 
     public void setFrame(final Image image) {
         this.image = image;
-        //resizeCanvas(image);
+        resizeCanvas(image);
 
         if (image == null) return;
 
@@ -313,6 +323,7 @@ public class MainLayout {
     public void reset() {
         this.maxContentBounds = new Rectangle();
         this.videoBoundary = new Rectangle();
+        processCurrentFrame();
     }
 
     public boolean openFile(final File file){

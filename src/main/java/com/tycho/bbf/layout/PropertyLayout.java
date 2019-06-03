@@ -1,6 +1,6 @@
 package com.tycho.bbf.layout;
 
-import com.tycho.bbf.ContentFinder;
+import com.tycho.bbf.contentfinder.ContentFinder;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -28,6 +28,13 @@ public class PropertyLayout {
 
     public void setProperty(final ContentFinder.RangedProperty property){
         title.setText(property.getName());
+
+        //Set label value
+        if (property.getValue() instanceof Integer){
+            value_label.setText(String.valueOf(property.getValue().intValue()));
+        }else{
+            value_label.setText(NUMBER_FORMAT.format(property.getValue()));
+        }
 
         //Set slider properties
         slider.setMin(property.getMin().doubleValue());

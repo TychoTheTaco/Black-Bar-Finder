@@ -1,20 +1,16 @@
-package com.tycho.bbf;
+package com.tycho.bbf.contentfinder;
 
 import com.tycho.bbf.layout.MainLayout;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.JavaFXFrameConverter;
 
 import java.io.File;
 

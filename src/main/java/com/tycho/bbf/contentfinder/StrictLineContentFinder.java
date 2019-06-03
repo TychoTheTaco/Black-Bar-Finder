@@ -1,4 +1,4 @@
-package com.tycho.bbf;
+package com.tycho.bbf.contentfinder;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

@@ -1,4 +1,4 @@
-package com.tycho.bbf;
+package com.tycho.bbf.contentfinder;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.*;
@@ -10,23 +10,21 @@ import java.util.List;
 
 public class LineContentFinder extends ContentFinder implements Debuggable {
 
-    //Decrease for higher accuracy, Increase for more speed
-    private static final int MAX_X_SKIP = 8;
-    private static final int MAX_Y_SKIP = 4;
-
-    /**
-     * The minimum value for a pixel to be considered 'content'. This value is compared against the average of a pixel's RGB values.
-     */
-    private static final double IMG_THRESHOLD = 0.01;
-
-    /**
-     * Minimum line length for a piece of content to be considered important. This value represents a percentage of the source width.
-     */
-    private static final double LINE_LENGTH_THRESHOLD = 0.015;
-
     private List<Line> debug_lines = new ArrayList<>();
 
     private Image image = null;
+
+    public LineContentFinder(){
+        //Decrease for higher accuracy, Increase for more speed
+        addProperty("max_x_skip", new RangedProperty("Max X skip", 8, 1, 64));
+        addProperty("max_y_skip", new RangedProperty("Max Y skip", 4, 1, 64));
+
+        //The minimum value for a pixel to be considered 'content'. This value is compared against the average of a pixel's RGB values.
+        addProperty("threshold", new RangedProperty("Color Threshold", 0.01f, 0, 1));
+
+        //Minimum line length for a piece of content to be considered important. This value represents a percentage of the source width.
+        addProperty("min_line_length", new RangedProperty("Minimum Line Length", 0.015, 0, 1));
+    }
 
     @Override
     public Rectangle findContent(Image frame) {
@@ -36,6 +34,12 @@ public class LineContentFinder extends ContentFinder implements Debuggable {
 
         final PixelReader pixelReader = frame.getPixelReader();
         image = frame;
+
+        //Read properties
+        final int MAX_X_SKIP = ((Number) getProperties().get("max_x_skip").getValue()).intValue();
+        final int MAX_Y_SKIP = ((Number) getProperties().get("max_y_skip").getValue()).intValue();
+        final float IMG_THRESHOLD = ((Number) getProperties().get("threshold").getValue()).floatValue();
+        final float LINE_LENGTH_THRESHOLD = ((Number) getProperties().get("min_line_length").getValue()).floatValue();
 
         int ySkip = MAX_Y_SKIP;
 
@@ -275,6 +279,7 @@ public class LineContentFinder extends ContentFinder implements Debuggable {
 
     @Override
     public void drawDebug(final GraphicsContext gc){
+        final float IMG_THRESHOLD = ((Number) getProperties().get("threshold").getValue()).floatValue();
         if (image != null) gc.drawImage(threshold(image, IMG_THRESHOLD), 0, 0);
 
         final boolean drawLines = true;

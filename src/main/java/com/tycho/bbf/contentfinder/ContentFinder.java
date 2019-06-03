@@ -1,4 +1,4 @@
-package com.tycho.bbf;
+package com.tycho.bbf.contentfinder;
 
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
@@ -58,5 +58,9 @@ public abstract class ContentFinder {
 
     public Map<String, Property> getProperties() {
         return properties;
+    }
+
+    protected final void addProperty(final String tag, final Property property){
+        this.properties.put(tag, property);
     }
 }
