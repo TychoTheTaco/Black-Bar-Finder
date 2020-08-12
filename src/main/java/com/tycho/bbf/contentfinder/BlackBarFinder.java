@@ -26,7 +26,7 @@ public class BlackBarFinder extends Application {
     public void start(Stage primaryStage) throws Exception {
         final BorderPane borderPane = new BorderPane();
 
-        //Setup menu bar
+        //Set up menu bar
         final MenuBar menuBar = new MenuBar();
         final Menu fileMenu = new Menu("File");
         final MenuItem openMenuItem = new MenuItem("Open");

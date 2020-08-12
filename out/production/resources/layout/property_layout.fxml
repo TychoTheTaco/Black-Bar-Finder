@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.tycho.bbf.layout.PropertyLayout">
+
+    <Label fx:id="title" text="Property" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+    <Label fx:id="value_label" text="Value" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+    <Slider fx:id="slider" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+</GridPane>

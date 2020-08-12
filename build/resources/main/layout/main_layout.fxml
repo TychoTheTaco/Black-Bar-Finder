@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.tycho.bbf.layout.MainLayout">
+
+    <GridPane fx:id="stats" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="RIGHT" style="-fx-background-color: red;">
+        <Label fx:id="frame_count_label" text="Frame: 123" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-background-color: blue;"/>
+        <Label fx:id="processing_time_label" text="Processed in 45 ms." GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT" style="-fx-background-color: green;"/>
+    </GridPane>
+
+    <Canvas fx:id="video_canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" width="640" height="480"/>
+
+    <GridPane fx:id="kb_shortcuts" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <Label text="[E] Toggle Overlay" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label text="[S] Previous Frame" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label text="[D] Next Frame" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+    </GridPane>
+
+</GridPane>
